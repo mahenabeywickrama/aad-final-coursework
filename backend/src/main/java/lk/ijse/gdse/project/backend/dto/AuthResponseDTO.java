@@ -1,10 +1,17 @@
 package lk.ijse.gdse.project.backend.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
-@Data
-@AllArgsConstructor
 public class AuthResponseDTO {
     private String accessToken;
+
+    public AuthResponseDTO(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
 }

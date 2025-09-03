@@ -1,5 +1,6 @@
 package lk.ijse.gdse.project.backend.exception;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lk.ijse.gdse.project.backend.dto.APIResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -20,6 +21,12 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public APIResponse handleBadCredentialsException(BadCredentialsException e) {
         return new APIResponse(404, "Bad Credentials", e);
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public APIResponse handleJWTTokenExpiredJwtException(ExpiredJwtException e) {
+        return new APIResponse(401, "Jwt Token Expired", e);
     }
 
     @ExceptionHandler(RuntimeException.class)

@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | CoreOne</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+    <!--Fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background: #0a0a0f;
+            color: #eaeaea;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background: transparent;
+            transition: background 0.6s ease, box-shadow 0.6s ease;
+        }
+
+        .navbar.scrolled {
+            background: rgba(15, 15, 20, 0.95);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.6);
+        }
+
+        .navbar-brand {
+            padding: 0;
+            font-weight: bold;
+            font-size: 1.5rem;
+            font-family: 'Orbitron', Tahoma, Geneva, Verdana, sans-serif;
+            color: #00f7ff !important;
+        }
+
+        .navbar-brand span {
+            color: #fff;
+        }
+
+        .nav-link {
+            font-size: 1rem;
+            color: #bbb !important;
+            margin-right: 15px;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: #00f7ff !important;
+        }
+
+        .nav-link i {
+            font-size: 1rem;
+            color: #bbb;
+            transition: color 0.3s;
+            margin-left: 12px;
+        }
+
+        .nav-link i:hover {
+            color: #00f7ff;
+        }
+
+        .navbar-toggler {
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            background: transparent !important;
+        }
+
+        .navbar-toggler i {
+            font-size: 1.4rem;
+            color: #fff;
+            transition: color 0.3s;
+        }
+
+        .navbar-toggler i:hover {
+            color: #00f7ff;
+        }
+
+        .signup-container {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .signup-card {
+            background: rgba(20, 20, 30, 0.8);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 247, 255, 0.2);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 25px rgba(0,247,255,0.2);
+            max-width: 450px;
+            width: 100%;
+        }
+
+        .signup-card h2 {
+            color: #00f7ff;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: bold;
+            font-family: 'Orbitron', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .form-control {
+            background: rgba(0,0,0,0.3);
+            color: #eaeaea;
+            border: 1px solid rgba(0,247,255,0.3);
+            border-radius: 50px;
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #00f7ff;
+            box-shadow: 0 0 10px #00f7ff;
+            background: rgba(0,0,0,0.5);
+            color: #fff;
+        }
+
+        .signup-card form div i {
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #bbb;
+        }
+
+        .btn-slide {
+            background: #00f7ff;
+            color: #000;
+            font-weight: 600;
+            padding: 12px 35px;
+            border-radius: 50px;
+            margin-top: 10px;
+            width: 100%;
+            border: none;
+            overflow: hidden;
+            position: relative;
+            transition: color 0.4s ease, background 0.4s ease;
+        }
+
+        .btn-slide::after {
+            content: "";
+            position: absolute;
+            left: -100%;
+            top: 0;
+            width: 50%;
+            height: 100%;
+            background: rgba(255,255,255,0.5);
+            transform: skewX(-25deg);
+            transition: left 0.6s ease;
+        }
+
+        .btn-slide:hover::after {
+            left: 150%;
+        }
+
+        .btn-slide:hover {
+            color: #fff;
+            background: #00c2cc;
+        }
+
+        .text-center a {
+            color: #00f7ff;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .text-center a:hover {
+            color: #fff;
+        }
+
+        .footer {
+            background: linear-gradient(135deg, #0a0f1a, #141a2e);
+            color: #bbb;
+            padding: 100px 0 40px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 0.95rem;
+        }
+
+        .footer .logo {
+            color: #00f7ff;
+            font-weight: bold;
+            font-size: 2rem;
+            font-family: 'Orbitron', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .footer .logo span {
+            color: #fff;
+        }
+
+        .footer-title {
+            color: #00f7ff;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 18px;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: #bbb;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #00f7ff;
+        }
+
+        .newsletter {
+            display: flex;
+            margin-top: 10px;
+            max-width: 400px;
+            border: 1px solid rgba(0,247,255,0.3);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .newsletter input {
+            flex: 1;
+            border: none;
+            padding: 12px;
+            background: rgba(0,0,0,0.4);
+            color: #fff;
+            outline: none;
+        }
+
+        .newsletter input::placeholder {
+            color: #aaa;
+        }
+
+        .newsletter button {
+            background: #00f7ff;
+            border: none;
+            padding: 0 20px;
+            color: #000;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .newsletter button:hover {
+            background: #00c2cc;
+            color: #fff;
+        }
+
+        .social-icons a {
+            display: inline-block;
+            font-size: 1.4rem;
+            margin-right: 18px;
+            color: #bbb;
+            transition: color 0.3s, transform 0.3s;
+        }
+
+        .social-icons a:hover {
+            color: #00f7ff;
+            transform: scale(1.2);
+        }
+
+        .footer hr {
+            border-color: rgba(0,247,255,0.2);
+            margin: 40px 0;
+        }
+
+        .footer-bottom {
+            font-size: 0.85rem;
+        }
+
+        .footer-bottom p {
+            margin: 0;
+        }
+
+        .footer-policies a {
+            margin-left: 30px;
+            color: #bbb;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-policies a:hover {
+            color: #00f7ff;
+        }
+
+        @media (max-width: 768px) {
+            .footer-policies {
+                margin-top: 15px;
+                text-align: center;
+            }
+
+            .footer-policies a {
+                display: block;
+                margin: 6px 0;
+            }
+        }
+
+        @media (max-width: 991px) {
+            .navbar-collapse {
+                background: rgba(15, 15, 20, 0.95);
+                padding: 20px;
+                border-radius: 12px;
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg fixed-top navbar-dark">
+    <div class="container">
+        <!-- Logo -->
+        <a class="navbar-brand" href="#">Core<span>One</span></a>
+
+        <!-- Toggler for mobile -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <!-- Centered Links + Right Icons -->
+        <div class="collapse navbar-collapse justify-content-between" id="navMenu">
+            <!-- Center Navigation Links -->
+            <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Prebuilt PCs</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Custom Build</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">About</a></li>
+            </ul>
+
+            <!-- Right Side Icons -->
+            <div class="d-flex align-items-center">
+                <a href="#" class="nav-link"><i class="fas fa-search"></i></a>
+                <a href="#" class="nav-link"><i class="fas fa-user"></i></a>
+                <a href="#" class="nav-link"><i class="fas fa-shopping-cart"></i></a>
+            </div>
+        </div>
+
+    </div>
+</nav>
+
+<div class="signup-container">
+    <div class="signup-card">
+        <h2>Create Your Account</h2>
+        <form>
+            <input type="text" class="form-control" placeholder="Username" required>
+            <input type="email" class="form-control" placeholder="Email Address" required>
+            <div class="mb-3 position-relative">
+                <input type="password" class="form-control password" placeholder="Password" required>
+                <i class="fas fa-eye-slash togglePassword"></i>
+            </div>
+            <div class="mb-3 position-relative">
+                <input type="password" class="form-control password" placeholder="Password" required>
+                <i class="fas fa-eye-slash togglePassword"></i>
+            </div>
+            <button type="submit" class="btn btn-slide">Sign Up</button>
+        </form>
+        <p class="text-center mt-3">
+            Already have an account? <a href="#">Login</a>
+        </p>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <div class="row justify-content-between align-items-start">
+            <!-- Logo & About -->
+            <div class="col-lg-3 mb-4">
+                <h3 class="logo">Core<span>One</span></h3>
+                <p>High-performance prebuilt and custom PCs designed for gamers, creators, and enthusiasts.</p>
+            </div>
+
+            <!-- Help -->
+            <div class="col-lg-2 mb-4">
+                <h6 class="footer-title">HELP</h6>
+                <ul class="footer-links">
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Track Order</a></li>
+                    <li><a href="#">Tech Support</a></li>
+                    <li><a href="#">FAQs</a></li>
+                </ul>
+            </div>
+
+            <!-- About -->
+            <div class="col-lg-2 mb-4">
+                <h6 class="footer-title">ABOUT</h6>
+                <ul class="footer-links">
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Gallery</a></li>
+                    <li><a href="#">Reviews</a></li>
+                </ul>
+            </div>
+
+            <!-- Newsletter + Social -->
+            <div class="col-lg-4 mb-4">
+                <h6 class="footer-title">NEWSLETTER</h6>
+                <p>Sign up to stay in the loop on our stellar PCs!</p>
+                <form class="newsletter">
+                    <input type="email" placeholder="Email Address" required>
+                    <button type="submit"><i class="fas fa-arrow-right"></i></button>
+                </form>
+                <h6 class="footer-title mt-4">CONNECT WITH US</h6>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                    <a href="#"><i class="fab fa-discord"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-twitch"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <!-- Bottom Bar -->
+        <div class="footer-bottom d-flex flex-column flex-md-row justify-content-between align-items-center">
+            <p>&copy; 2025 CoreOne. All Rights Reserved.</p>
+            <div class="footer-policies">
+                <a href="#">Terms of Service</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Shipping Policy</a>
+                <a href="#">Our Warranty</a>
+                <a href="#">Refund Policy</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    window.addEventListener('scroll', () => {
+        const navbar = document.querySelector('.navbar');
+        navbar.classList.toggle('scrolled', window.scrollY > 50);
+
+        document.querySelectorAll('.reveal').forEach(el => {
+            const position = el.getBoundingClientRect().top;
+            if (position < window.innerHeight - 100) {
+                el.classList.add('active');
+            }
+        });
+    });
+
+    const toggles = document.getElementsByClassName('togglePassword');
+    const passwords = document.getElementsByClassName('password');
+
+    for (let i = 0; i < toggles.length; i++) {
+        toggles[i].addEventListener('click', () => {
+            const pwd = passwords[i];
+            if (pwd.type === 'password') {
+                pwd.type = 'text';
+                toggles[i].classList.remove('fa-eye-slash');
+                toggles[i].classList.add('fa-eye');
+            } else {
+                pwd.type = 'password';
+                toggles[i].classList.remove('fa-eye');
+                toggles[i].classList.add('fa-eye-slash');
+            }
+        });
+    }
+</script>
+</body>
+</html>

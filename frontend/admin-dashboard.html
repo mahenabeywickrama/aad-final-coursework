@@ -103,6 +103,212 @@
       background: #00f7ff;
       border-radius: 4px;
     }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 60px;
+        padding: 20px 10px;
+      }
+
+      .sidebar h2 {
+        font-size: 1rem;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .sidebar h2 span {
+        display: block;
+        font-size: 0.9rem;
+        margin-top: 2px;
+      }
+
+      .sidebar a {
+        justify-content: center;
+        padding: 12px 0;
+        font-size: 0;
+      }
+
+      .sidebar a i {
+        font-size: 1.2rem;
+        margin-left: 5px;
+      }
+    }
+
+    .neon-btn {
+      background: #00f7ff;
+      color: #0a0a0f;
+      font-weight: bold;
+      border: none;
+      padding: 10px 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #00f7ff;
+      transition: 0.3s;
+      cursor: pointer;
+    }
+
+    .neon-btn:hover {
+      background: #00ffff;
+      box-shadow: 0 0 20px #00ffff;
+      color: #000;
+    }
+
+    #addPCSection {
+      margin: 0 auto;
+      padding: 10px 20px;
+      width: 100%;
+      text-align: left;
+    }
+
+    .pc-form-timeline {
+      position: relative;
+      width: 100%;
+      padding: 10px 15px;
+      border-left: 3px solid rgba(0,247,255,0.25);
+      margin: 0;
+    }
+
+    .timeline-progress {
+      position: absolute;
+      left: 19px;
+      top: 0;
+      width: 3px;
+      height: 0;
+      background: #00f7ff;
+      transition: height 0.4s ease;
+    }
+
+    .timeline-step {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 35px;
+      position: relative;
+    }
+
+    .timeline-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(0,247,255,0.15);
+      border: 2px solid #00f7ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #00f7ff;
+      margin-right: 18px;
+      flex-shrink: 0;
+      transition: 0.3s;
+      box-shadow: 0 0 10px rgba(0,247,255,0.3);
+    }
+
+    .timeline-step.active .timeline-icon {
+      background: #00f7ff;
+      color: #0a0a0f;
+      box-shadow: 0 0 20px #00f7ff;
+    }
+
+    .timeline-step::before {
+      content: "";
+      position: absolute;
+      left: 20px;
+      top: 42px;
+      height: 100%;
+      width: 2px;
+      background: rgba(0,247,255,0.2);
+    }
+
+    .timeline-step:last-child::before {
+      display: none;
+    }
+
+    .timeline-content {
+      flex: 1;
+    }
+
+    .timeline-content .form-floating {
+      width: 100%;
+    }
+
+    .timeline-content .form-floating label {
+      color: #aaa;
+    }
+
+    .timeline-content .form-control {
+      background: rgba(10,10,20,0.9);
+      border: 1px solid rgba(0,247,255,0.5);
+      border-radius: 8px;
+      color: #eaeaea;
+    }
+
+    .timeline-content .form-control:focus {
+      border-color: #00f7ff;
+      box-shadow: 0 0 12px rgba(0,247,255,0.8);
+      background: rgba(15,15,25,0.95);
+    }
+
+    #previewImage {
+      max-width: 260px;
+      border-radius: 12px;
+      display: none;
+      margin-top: 10px;
+      transition: transform 0.3s ease;
+      box-shadow: 0 0 15px rgba(0,247,255,0.5);
+    }
+
+    .main-content .card.text-center {
+      position: relative;
+      padding: 25px 20px;
+      background: rgba(20,20,30,0.85);
+      border: 1px solid rgba(0,247,255,0.3);
+      border-radius: 20px;
+      box-shadow: 0 0 15px rgba(0,247,255,0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+      overflow: hidden;
+    }
+
+    .main-content .card.text-center h5 {
+      font-family: 'Exo', sans-serif;
+      font-size: 1rem;
+      color: #00f7ff;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .main-content .card.text-center p {
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: #fff;
+      margin: 0;
+      position: relative;
+    }
+
+    .main-content .card.text-center::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, #00f7ff, #ff00ff, #00ffea, #ffea00);
+      background-size: 400% 400%;
+      animation: neonGradient 5s linear infinite;
+      opacity: 0.2;
+      z-index: 0;
+      border-radius: 20px;
+    }
+
+    .main-content .card.text-center:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 25px rgba(0,247,255,0.6);
+    }
+
+    @keyframes neonGradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+
   </style>
 </head>
 <body>
@@ -111,6 +317,7 @@
 <div class="sidebar">
   <h2>Core<span>One</span></h2>
   <a href="#" class="active"><i class="fas fa-home"></i> Dashboard</a>
+  <a href="#"><i class="fas fa-desktop"></i> Add a PC</a>
   <a href="#"><i class="fas fa-users"></i> Manage Users</a>
   <a href="#"><i class="fas fa-box"></i> Manage Products</a>
   <a href="#"><i class="fas fa-shopping-cart"></i> Orders</a>
@@ -121,89 +328,334 @@
 
 <!-- Main Content -->
 <div class="main-content">
-  <h1 id="welcomeMessage">Welcome, Admin</h1>
-  <div class="row">
-    <div class="col-md-4">
-      <div class="card">
-        <h5>Total Users</h5>
-        <p>1,245</p>
+  <div id="dashboardSection">
+    <h1 id="welcomeMessage">Welcome, Admin</h1>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card">
+          <h5>Total Users</h5>
+          <p>1,245</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card">
+          <h5>Total Orders</h5>
+          <p>560</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card">
+          <h5>Revenue</h5>
+          <p>$45,800</p>
+        </div>
       </div>
     </div>
-    <div class="col-md-4">
-      <div class="card">
-        <h5>Total Orders</h5>
-        <p>560</p>
+    <div class="row mt-3">
+      <div class="col-md-6">
+        <div class="card">
+          <h5>Recent Orders</h5>
+          <p>Latest order data...</p>
+        </div>
       </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card">
-        <h5>Revenue</h5>
-        <p>$45,800</p>
+      <div class="col-md-6">
+        <div class="card">
+          <h5>System Status</h5>
+          <p>Servers operating normally</p>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="row mt-3">
-    <div class="col-md-6">
-      <div class="card">
-        <h5>Recent Orders</h5>
-        <p>Latest order data...</p>
+  <!-- Add PC Form (hidden by default) -->
+  <div id="addPCSection" style="display:none;">
+    <h1 class="mb-4 text-start">
+      <i class="fas fa-desktop me-2"></i> Add a New Prebuilt PC
+    </h1>
+    <div class="row">
+      <!-- Left Side: Form -->
+      <div class="col-lg-6">
+        <div class="pc-form-timeline">
+          <div class="timeline-progress" id="timelineProgress"></div>
+          <form id="addPCForm">
+
+            <!-- PC Name -->
+            <div class="timeline-step">
+              <div class="timeline-icon"><i class="fas fa-keyboard"></i></div>
+              <div class="timeline-content form-floating">
+                <input type="text" class="form-control" id="pcName" placeholder="PC Name" required>
+                <label for="pcName">PC Name</label>
+              </div>
+            </div>
+
+            <!-- Series -->
+            <div class="timeline-step">
+              <div class="timeline-icon"><i class="fas fa-layer-group"></i></div>
+              <div class="timeline-content form-floating">
+                <select class="form-control" id="pcSeries" required>
+                  <option value="" disabled selected>Select Series</option>
+                  <option value="PRO">PRO</option>
+                  <option value="ELITE">ELITE</option>
+                  <option value="ULTIMATE">ULTIMATE</option>
+                </select>
+                <label for="pcSeries">Series</label>
+              </div>
+            </div>
+
+            <!-- CPU -->
+            <div class="timeline-step">
+              <div class="timeline-icon"><i class="fas fa-microchip"></i></div>
+              <div class="timeline-content form-floating">
+                <input type="text" class="form-control" id="pcCPU" placeholder="CPU" required>
+                <label for="pcCPU">CPU</label>
+              </div>
+            </div>
+
+            <!-- CPU Cooler -->
+            <div class="timeline-step">
+              <div class="timeline-icon"><i class="fas fa-fan"></i></div>
+              <div class="timeline-content form-floating">
+                <input type="text" class="form-control" id="pcCooler" placeholder="CPU Cooler" required>
+                <label for="pcCooler">CPU Cooler</label>
+              </div>
+            </div>
+
+            <!-- RAM -->
+            <div class="timeline-step">
+              <div class="timeline-icon"><i class="fas fa-memory"></i></div>
+              <div class="timeline-content form-floating">
+                <input type="text" class="form-control" id="pcRAM" placeholder="RAM" required>
+                <label for="pcRAM">RAM</label>
+              </div>
+            </div>
+
+            <!-- Graphics Card -->
+            <div class="timeline-step">
+              <div class="timeline-icon"><i class="fas fa-video"></i></div>
+              <div class="timeline-content form-floating">
+                <input type="text" class="form-control" id="pcGPU" placeholder="Graphics Card" required>
+                <label for="pcGPU">Graphics Card</label>
+              </div>
+            </div>
+
+            <!-- Motherboard -->
+            <div class="timeline-step">
+              <div class="timeline-icon"><i class="fas fa-server"></i></div>
+              <div class="timeline-content form-floating">
+                <input type="text" class="form-control" id="pcMotherboard" placeholder="Motherboard" required>
+                <label for="pcMotherboard">Motherboard</label>
+              </div>
+            </div>
+
+            <!-- Storage -->
+            <div class="timeline-step">
+              <div class="timeline-icon"><i class="fas fa-hdd"></i></div>
+              <div class="timeline-content form-floating">
+                <input type="text" class="form-control" id="pcStorage" placeholder="Storage" required>
+                <label for="pcStorage">Storage</label>
+              </div>
+            </div>
+
+            <!-- Power Supply -->
+            <div class="timeline-step">
+              <div class="timeline-icon"><i class="fas fa-plug"></i></div>
+              <div class="timeline-content form-floating">
+                <input type="text" class="form-control" id="pcPSU" placeholder="Power Supply" required>
+                <label for="pcPSU">Power Supply</label>
+              </div>
+            </div>
+
+            <!-- RGB Fans -->
+            <div class="timeline-step">
+              <div class="timeline-icon"><i class="fas fa-fan"></i></div>
+              <div class="timeline-content form-floating">
+                <input type="text" class="form-control" id="pcFans" placeholder="RGB Fans" required>
+                <label for="pcFans">RGB Fans</label>
+              </div>
+            </div>
+
+            <!-- Case -->
+            <div class="timeline-step">
+              <div class="timeline-icon"><i class="fas fa-box"></i></div>
+              <div class="timeline-content form-floating">
+                <input type="text" class="form-control" id="pcCase" placeholder="Case" required>
+                <label for="pcCase">Case</label>
+              </div>
+            </div>
+
+            <!-- Operating System -->
+            <div class="timeline-step">
+              <div class="timeline-icon"><i class="fab fa-windows"></i></div>
+              <div class="timeline-content form-floating">
+                <input type="text" class="form-control" id="pcOS" placeholder="Operating System" required>
+                <label for="pcOS">Operating System</label>
+              </div>
+            </div>
+
+            <!-- Price -->
+            <div class="timeline-step">
+              <div class="timeline-icon"><i class="fas fa-dollar-sign"></i></div>
+              <div class="timeline-content form-floating">
+                <input type="number" class="form-control" id="pcPrice" placeholder="Price" required>
+                <label for="pcPrice">Price ($)</label>
+              </div>
+            </div>
+
+            <!-- Image Upload -->
+            <div class="timeline-step">
+              <div class="timeline-icon"><i class="fas fa-image"></i></div>
+              <div class="timeline-content">
+                <label for="pcImage" class="form-label">Upload Image</label>
+                <input type="file" class="form-control" id="pcImage" accept="image/*" required>
+                <img id="previewImage" src="" alt="Preview">
+              </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="text-center mt-4">
+              <button type="submit" class="btn neon-btn px-5">
+                <i class="fas fa-plus-circle me-2"></i> Add PC
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card">
-        <h5>System Status</h5>
-        <p>Servers operating normally</p>
+
+      <!-- Right Side: Stats + Table -->
+      <div class="col-lg-6">
+        <!-- Stats Cards -->
+        <div class="row mb-4">
+          <div class="col-md-6 col-lg-3">
+            <div class="card text-center">
+              <h5><i class="fas fa-desktop me-1"></i> Total PCs</h5>
+              <p>120</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="card text-center">
+              <h5><i class="fas fa-dollar-sign me-1"></i> Total Sales</h5>
+              <p>350</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="card text-center">
+              <h5><i class="fas fa-chart-line me-1"></i> Revenue</h5>
+              <p>$95,000</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="card text-center">
+              <h5><i class="fas fa-star me-1"></i> Top Series</h5>
+              <p>Gaming Pro</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Saved PCs Table -->
+        <div class="card">
+          <h5 class="mb-3"><i class="fas fa-desktop me-2"></i> Saved PCs</h5>
+          <div class="table-responsive">
+            <table class="table table-dark table-striped align-middle">
+              <thead>
+              <tr>
+                <th>PC Name</th>
+                <th>Series</th>
+                <th>CPU</th>
+                <th>GPU</th>
+                <th>RAM</th>
+                <th>Storage</th>
+                <th>Price</th>
+                <th>Sales</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>CoreOne Alpha</td>
+                <td>Alpha Series</td>
+                <td>Intel i7-12700K</td>
+                <td>RTX 3070</td>
+                <td>16GB DDR4</td>
+                <td>1TB SSD</td>
+                <td>$1,500</td>
+                <td>45</td>
+              </tr>
+              <tr>
+                <td>CoreOne Stealth</td>
+                <td>Stealth Series</td>
+                <td>Ryzen 7 5800X</td>
+                <td>RTX 3080</td>
+                <td>32GB DDR4</td>
+                <td>2TB SSD</td>
+                <td>$2,200</td>
+                <td>30</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script>
   $(document).ready(function () {
-    const token = localStorage.getItem("accessToken");
+    // const token = localStorage.getItem("accessToken");
+    //
+    // if (!token) {
+    //   window.location.href = "signin.html";
+    //   return;
+    // }
+    //
+    // $.ajax({
+    //   url: "http://localhost:8080/hello/admin",
+    //   method: "GET",
+    //   headers: {
+    //     "Authorization": "Bearer " + token
+    //   },
+    //   success: function (response) {
+    //     console.log("Response:", response);
+    //     const payload = parseJwt(token);
+    //     $("#welcomeMessage").text("Welcome, " + payload.sub);
+    //   },
+    //   error: function (xhr) {
+    //     if (xhr.status === 403) {
+    //       window.location.href = "user-dashboard.html";
+    //     } else if (xhr.status === 401) {
+    //       localStorage.removeItem("accessToken");
+    //       window.location.href = "signin.html";
+    //     } else {
+    //       alert("Error: " + xhr.responseText);
+    //     }
+    //   }
+    // });
+    //
+    // function parseJwt(token) {
+    //   try {
+    //     return JSON.parse(atob(token.split('.')[1]));
+    //   } catch (e) {
+    //     return null;
+    //   }
+    // }
+    //
+    // $("#logOut").on("click", function (e) {
+    //   e.preventDefault();
+    //   localStorage.removeItem("accessToken");
+    //   window.location.href = "signin.html";
+    // });
 
-    if (!token) {
-      window.location.href = "signin.html";
-      return;
-    }
-
-    $.ajax({
-      url: "http://localhost:8080/hello/admin",
-      method: "GET",
-      headers: {
-        "Authorization": "Bearer " + token
-      },
-      success: function (response) {
-        console.log("Response:", response);
-        const payload = parseJwt(token);
-        $("#welcomeMessage").text("Welcome, " + payload.sub);
-      },
-      error: function (xhr) {
-        if (xhr.status === 403) {
-          window.location.href = "user-dashboard.html";
-        } else if (xhr.status === 401) {
-          localStorage.removeItem("accessToken");
-          window.location.href = "signin.html";
-        } else {
-          alert("Error: " + xhr.responseText);
+    document.getElementById("pcImage").addEventListener("change", function(event){
+      const file = event.target.files[0];
+      if(file){
+        const reader = new FileReader();
+        reader.onload = function(e){
+          const preview = document.getElementById("previewImage");
+          preview.src = e.target.result;
+          preview.style.display = "block";
         }
+        reader.readAsDataURL(file);
       }
-    });
-
-    function parseJwt(token) {
-      try {
-        return JSON.parse(atob(token.split('.')[1]));
-      } catch (e) {
-        return null;
-      }
-    }
-
-    $("#logOut").on("click", function (e) {
-      e.preventDefault();
-      localStorage.removeItem("accessToken");
-      window.location.href = "signin.html";
     });
 
     $(".sidebar a").on("click", function (e) {
@@ -211,6 +663,54 @@
 
       $(".sidebar a").removeClass("active");
       $(this).addClass("active");
+
+      if ($(this).find("i").hasClass("fa-desktop")) {
+        $("#dashboardSection").hide();
+        $("#addPCSection").show();
+      } else if ($(this).find("i").hasClass("fa-home")) {
+        $("#addPCSection").hide();
+        $("#dashboardSection").show();
+      } else {
+        $("#addPCSection").hide();
+        $("#dashboardSection").show();
+      }
+    });
+
+    $("#addPCForm").on("submit", function(e) {
+      e.preventDefault();
+
+      // Gather form data
+      const pcData = {
+        name: $("#pcName").val(),
+        series: $("#pcSeries").val(),
+        cpu: $("#pcCPU").val(),
+        cooler: $("#pcCooler").val(),
+        ram: $("#pcRAM").val(),
+        gpu: $("#pcGPU").val(),
+        motherboard: $("#pcMotherboard").val(),
+        storage: $("#pcStorage").val(),
+        psu: $("#pcPSU").val(),
+        fans: $("#pcFans").val(),
+        pcCase: $("#pcCase").val(),
+        os: $("#pcOS").val(),
+        price: parseFloat($("#pcPrice").val())
+      };
+
+      $.ajax({
+        url: "http://localhost:8080/api/v1/job/create",
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(pcData),
+        success: function(response) {
+          alert(response.message || "PC Created Successfully");
+          // Optionally reset form
+          $("#addPCForm")[0].reset();
+          $("#previewImage").hide();
+        },
+        error: function(xhr) {
+          alert("Error: " + xhr.responseText);
+        }
+      });
     });
   });
 

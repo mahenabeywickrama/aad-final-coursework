@@ -13,6 +13,24 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public APIResponse handlerGenericException(Exception e) {
+        return new APIResponse(500, "Internal Server Error", e.getMessage());
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public APIResponse handlerResourceNotFoundException(ResourceNotFoundException e) {
+        return new APIResponse(404, "Resource not found", e.getMessage());
+    }
+
+    @ExceptionHandler(ResourceAlreadyFoundException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public APIResponse handlerResourceAlreadyFoundException(ResourceAlreadyFoundException e) {
+        return new APIResponse(409, "Resource already exists", e.getMessage());
+    }
+
     @ExceptionHandler(UsernameNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public APIResponse handleUsernameNotFoundException(UsernameNotFoundException e) {

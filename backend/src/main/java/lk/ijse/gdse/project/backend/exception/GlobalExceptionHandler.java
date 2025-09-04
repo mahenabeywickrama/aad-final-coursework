@@ -3,6 +3,8 @@ package lk.ijse.gdse.project.backend.exception;
 import io.jsonwebtoken.ExpiredJwtException;
 import lk.ijse.gdse.project.backend.dto.APIResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -33,5 +35,11 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public APIResponse handleRuntimeException(RuntimeException e) {
         return new APIResponse(500, "Internal Server Error", e.getMessage());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public APIResponse handleAccessDenied(AccessDeniedException e) {
+        return new APIResponse(403, "Access Denied", e.getMessage());
     }
 }

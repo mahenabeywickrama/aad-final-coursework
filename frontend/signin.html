@@ -338,7 +338,7 @@
 <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
   <div class="container">
     <!-- Logo -->
-    <a class="navbar-brand" href="#">Core<span>One</span></a>
+    <a class="navbar-brand" href="index.html">Core<span>One</span></a>
 
     <!-- Toggler for mobile -->
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
@@ -349,7 +349,7 @@
     <div class="collapse navbar-collapse justify-content-between" id="navMenu">
       <!-- Center Navigation Links -->
       <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-        <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
         <li class="nav-item"><a class="nav-link" href="#">Prebuilt PCs</a></li>
         <li class="nav-item"><a class="nav-link" href="#">Custom Build</a></li>
         <li class="nav-item"><a class="nav-link" href="#">About</a></li>
@@ -358,7 +358,7 @@
       <!-- Right Side Icons -->
       <div class="d-flex align-items-center">
         <a href="#" class="nav-link"><i class="fas fa-search"></i></a>
-        <a href="#" class="nav-link"><i class="fas fa-user"></i></a>
+        <a href="user-dashboard.html" class="nav-link"><i class="fas fa-user"></i></a>
         <a href="#" class="nav-link"><i class="fas fa-shopping-cart"></i></a>
       </div>
     </div>
@@ -370,7 +370,7 @@
   <div class="signup-card">
     <h2>Sign In to Your Account</h2>
     <form>
-      <input type="text" class="form-control" placeholder="Username" required>
+      <input type="text" class="form-control" id="username" placeholder="Username" required>
       <div class="mb-3 position-relative">
         <input type="password" class="form-control" id="password" placeholder="Password" required>
         <i class="fas fa-eye-slash" id="togglePassword"></i>
@@ -378,8 +378,11 @@
       <a href="#" class="forgot-password">Forgot Password?</a>
       <button type="submit" class="btn-slide">Sign In</button>
     </form>
+
+    <div id="message" class="text-center mt-3"></div>
+
     <p class="text-center mt-3">
-      Don't have an account? <a href="#">Sign Up</a>
+      Don't have an account? <a href="signup.html">Sign Up</a>
     </p>
   </div>
 </div>
@@ -458,8 +461,9 @@
     $(".signup-card form").submit(function(e) {
       e.preventDefault();
 
-      const username = $(this).find('input[type="text"]').val();
+      const username = $("#username").val();
       const password = $("#password").val();
+      let message = $("#message");
 
       $.ajax({
         url: "http://localhost:8080/auth/login",
@@ -470,17 +474,37 @@
           password: password
         }),
         success: function(response) {
-          alert("Login successful!");
-          console.log(response);
+          const token = response.data.accessToken;
+          if (token) {
+            localStorage.setItem('accessToken', token);
+          }
 
-          $("input[type='text'], #password").val('');
+          const payload = parseJwt(token);
+          console.log(payload);
+
+          // alert("Login successful!");
+          // console.log(response);
+          message.html("<span style='color:lightgreen;'>Sign In successful!</span>");
+          $("#username, #password").val('');
+
+          if (payload.sub === "admin") {
+            window.location.href = "admin-dashboard.html";
+          } else {
+            window.location.href = "user-dashboard.html";
+          }
         },
         error: function(xhr, status, error) {
-          alert("Login failed: " + xhr.responseText);
-          console.error(xhr, status, error);
+          let errMsg = xhr.responseJSON ? xhr.responseJSON.data : "Server error";
+          message.html("<span style='color:red;'>Error: " + errMsg + "</span>");
         }
       });
     });
+
+    function parseJwt(token) {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      return JSON.parse(atob(base64));
+    }
 
     $(window).on("scroll", function() {
       const scrollTop = $(this).scrollTop();

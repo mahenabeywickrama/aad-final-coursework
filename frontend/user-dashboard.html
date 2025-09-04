@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard | CoreOne</title>
+  <title>Account | CoreOne</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
@@ -104,10 +104,10 @@
       font-weight: 500;
       margin-bottom: 10px;
       border-radius: 12px;
-      transition: all 0.3s linear;
+      transition: all 0.1s linear;
     }
 
-    .sidebar a:hover {
+    .sidebar a:hover, .sidebar a.active{
       background: rgba(0,247,255,0.2);
       color: #00f7ff;
       border-left: 3px solid #00f7ff;
@@ -308,20 +308,20 @@
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
   <div class="container">
-    <a class="navbar-brand" href="#">Core<span>One</span></a>
+    <a class="navbar-brand" href="index.html">Core<span>One</span></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
       <i class="fa-solid fa-bars"></i>
     </button>
     <div class="collapse navbar-collapse justify-content-between" id="navMenu">
       <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-        <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
         <li class="nav-item"><a class="nav-link" href="#">Prebuilt PCs</a></li>
         <li class="nav-item"><a class="nav-link" href="#">Custom Build</a></li>
         <li class="nav-item"><a class="nav-link" href="#">About</a></li>
       </ul>
       <div class="d-flex align-items-center">
         <a href="#" class="nav-link"><i class="fas fa-search"></i></a>
-        <a href="#" class="nav-link"><i class="fas fa-user"></i></a>
+        <a href="user-dashboard.html" class="nav-link"><i class="fas fa-user"></i></a>
         <a href="#" class="nav-link"><i class="fas fa-shopping-cart"></i></a>
       </div>
     </div>
@@ -332,16 +332,17 @@
 <div class="dashboard-wrapper">
   <!-- Sidebar -->
   <div class="sidebar">
-    <a href="#" title="Dashboard"><i class="fas fa-home"></i> Dashboard</a>
-    <a href="#" title="Prebuilt PCs"><i class="fas fa-desktop"></i> Prebuilt PCs</a>
-    <a href="#" title="Custom Build"><i class="fas fa-tools"></i> Custom Build</a>
+    <a href="#" class="active" title="Dashboard"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="#" title="Prebuilt PCs"><i class="fas fa-clock"></i> Order History</a>
+    <a href="#" title="Custom Build"><i class="fas fa-tools"></i> My Builds</a>
     <a href="#" title="Profile"><i class="fas fa-user"></i> Profile</a>
     <a href="#" title="Settings"><i class="fas fa-cog"></i> Settings</a>
+    <a href="#" id="logOut" title="Logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
   </div>
 
   <!-- Main Content -->
   <div class="main-content">
-    <h2>Welcome, Mahen</h2>
+    <h2 id="welcomeMessage">Welcome, Mahen</h2>
     <div class="row mt-4">
       <div class="col-md-4">
         <div class="card">
@@ -383,10 +384,13 @@
 <footer class="footer">
   <div class="container">
     <div class="row justify-content-between align-items-start">
+      <!-- Logo & About -->
       <div class="col-lg-3 mb-4">
         <h3 class="logo">Core<span>One</span></h3>
         <p>High-performance prebuilt and custom PCs designed for gamers, creators, and enthusiasts.</p>
       </div>
+
+      <!-- Help -->
       <div class="col-lg-2 mb-4">
         <h6 class="footer-title">HELP</h6>
         <ul class="footer-links">
@@ -396,6 +400,8 @@
           <li><a href="#">FAQs</a></li>
         </ul>
       </div>
+
+      <!-- About -->
       <div class="col-lg-2 mb-4">
         <h6 class="footer-title">ABOUT</h6>
         <ul class="footer-links">
@@ -404,16 +410,30 @@
           <li><a href="#">Reviews</a></li>
         </ul>
       </div>
+
+      <!-- Newsletter + Social -->
       <div class="col-lg-4 mb-4">
         <h6 class="footer-title">NEWSLETTER</h6>
         <p>Sign up to stay in the loop on our stellar PCs!</p>
-        <form class="newsletter d-flex">
-          <input type="email" placeholder="Email Address" class="form-control me-2">
-          <button type="submit" class="btn btn-primary"><i class="fas fa-arrow-right"></i></button>
+        <form class="newsletter">
+          <input type="email" placeholder="Email Address" required>
+          <button type="submit"><i class="fas fa-arrow-right"></i></button>
         </form>
+        <h6 class="footer-title mt-4">CONNECT WITH US</h6>
+        <div class="social-icons">
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-tiktok"></i></a>
+          <a href="#"><i class="fab fa-discord"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-youtube"></i></a>
+          <a href="#"><i class="fab fa-twitch"></i></a>
+        </div>
       </div>
     </div>
+
     <hr>
+
+    <!-- Bottom Bar -->
     <div class="footer-bottom d-flex flex-column flex-md-row justify-content-between align-items-center">
       <p>&copy; 2025 CoreOne. All Rights Reserved.</p>
       <div class="footer-policies">
@@ -427,11 +447,82 @@
   </div>
 </footer>
 
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  window.addEventListener('scroll', () => {
-    const navbar = document.querySelector('.navbar');
-    navbar.classList.toggle('scrolled', window.scrollY > 50);
+  $(document).ready(function () {
+    const token = localStorage.getItem("accessToken");
+
+    if (!token) {
+      window.location.href = "signin.html";
+      return;
+    }
+
+    $.ajax({
+      url: "http://localhost:8080/hello/user",
+      method: "GET",
+      headers: {
+        "Authorization": "Bearer " + token
+      },
+      success: function (response) {
+        console.log("Response:", response);
+        const payload = parseJwt(token);
+        $("#welcomeMessage").text("Welcome, " + payload.sub);
+      },
+      error: function (xhr) {
+        if (xhr.status === 403) {
+          window.location.href = "admin-dashboard.html";
+        } else if (xhr.status === 401) {
+          localStorage.removeItem("accessToken");
+          window.location.href = "signin.html";
+        } else {
+          alert("Error: " + xhr.responseText);
+        }
+      }
+    });
+
+    function parseJwt(token) {
+      try {
+        return JSON.parse(atob(token.split('.')[1]));
+      } catch (e) {
+        return null;
+      }
+    }
+
+    $("#logOut").on("click", function (e) {
+      e.preventDefault();
+      localStorage.removeItem("accessToken");
+      window.location.href = "signin.html";
+    });
+
+  });
+
+  $(".sidebar a").on("click", function (e) {
+    if ($(this).attr("id") === "logOut") return;
+
+    $(".sidebar a").removeClass("active");
+    $(this).addClass("active");
+  });
+
+  $(window).on("scroll", function () {
+    const navbar = $(".navbar");
+
+    if ($(this).scrollTop() > 50) {
+      navbar.addClass("scrolled");
+    } else {
+      navbar.removeClass("scrolled");
+    }
+
+    $(".reveal").each(function () {
+      const position = $(this).offset().top;
+      const windowTop = $(window).scrollTop();
+      const windowHeight = $(window).height();
+
+      if (position < windowTop + windowHeight - 100) {
+        $(this).addClass("active");
+      }
+    });
+
   });
 </script>
 </body>

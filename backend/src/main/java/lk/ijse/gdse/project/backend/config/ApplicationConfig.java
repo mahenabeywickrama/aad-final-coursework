@@ -1,7 +1,6 @@
 package lk.ijse.gdse.project.backend.config;
 
 import lk.ijse.gdse.project.backend.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

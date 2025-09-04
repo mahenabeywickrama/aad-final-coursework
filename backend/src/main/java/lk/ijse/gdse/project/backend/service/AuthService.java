@@ -7,7 +7,6 @@ import lk.ijse.gdse.project.backend.entity.Role;
 import lk.ijse.gdse.project.backend.entity.User;
 import lk.ijse.gdse.project.backend.repository.UserRepository;
 import lk.ijse.gdse.project.backend.util.JWTUtil;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -49,7 +48,7 @@ public class AuthService {
         user.setUsername(registerDTO.getUsername());
         user.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
         user.setEmail(registerDTO.getEmail());
-        user.setRole(Role.USER);
+        user.setRole(registerDTO.getRole());
         userRepository.save(user);
         return "User registered successfully";
     }

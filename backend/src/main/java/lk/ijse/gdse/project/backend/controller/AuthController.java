@@ -4,7 +4,6 @@ import lk.ijse.gdse.project.backend.dto.APIResponse;
 import lk.ijse.gdse.project.backend.dto.AuthDTO;
 import lk.ijse.gdse.project.backend.dto.RegisterDTO;
 import lk.ijse.gdse.project.backend.service.AuthService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,6 +30,7 @@ public class AuthController {
                 )
         );
     }
+
     @PostMapping("/login")
     public ResponseEntity<APIResponse> login(@RequestBody AuthDTO authDTO){
         return ResponseEntity.ok(new APIResponse(200,

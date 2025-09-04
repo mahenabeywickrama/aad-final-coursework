@@ -14,24 +14,24 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UsernameNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public APIResponse handleUsernameNotFoundException(UsernameNotFoundException e) {
-        return new APIResponse(404, "User Not Found", e);
+        return new APIResponse(404, "User Not Found", e.getMessage());
     }
 
     @ExceptionHandler(BadCredentialsException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public APIResponse handleBadCredentialsException(BadCredentialsException e) {
-        return new APIResponse(404, "Bad Credentials", e);
+        return new APIResponse(404, "Bad Credentials", e.getMessage());
     }
 
     @ExceptionHandler(ExpiredJwtException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public APIResponse handleJWTTokenExpiredJwtException(ExpiredJwtException e) {
-        return new APIResponse(401, "Jwt Token Expired", e);
+        return new APIResponse(401, "Jwt Token Expired", e.getMessage());
     }
 
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public APIResponse handleRuntimeException(RuntimeException e) {
-        return new APIResponse(500, "Internal Server Error", e);
+        return new APIResponse(500, "Internal Server Error", e.getMessage());
     }
 }

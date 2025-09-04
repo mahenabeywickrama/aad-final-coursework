@@ -360,19 +360,22 @@
 <div class="signup-container">
     <div class="signup-card">
         <h2>Create Your Account</h2>
-        <form>
-            <input type="text" class="form-control" placeholder="Username" required>
-            <input type="email" class="form-control" placeholder="Email Address" required>
+        <form id="signupForm">
+            <input type="text" id="username" class="form-control" placeholder="Username" required>
+            <input type="email" id="email" class="form-control" placeholder="Email Address" required>
             <div class="mb-3 position-relative">
-                <input type="password" class="form-control password" placeholder="Password" required>
+                <input type="password" id="password" class="form-control password" placeholder="Password" required>
                 <i class="fas fa-eye-slash togglePassword"></i>
             </div>
             <div class="mb-3 position-relative">
-                <input type="password" class="form-control password" placeholder="Password" required>
+                <input type="password" id="confirmPassword" class="form-control password" placeholder="Confirm Password" required>
                 <i class="fas fa-eye-slash togglePassword"></i>
             </div>
             <button type="submit" class="btn btn-slide">Sign Up</button>
         </form>
+
+        <div id="message" class="text-center mt-3"></div>
+
         <p class="text-center mt-3">
             Already have an account? <a href="#">Login</a>
         </p>
@@ -445,37 +448,73 @@
     </div>
 </footer>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    window.addEventListener('scroll', () => {
-        const navbar = document.querySelector('.navbar');
-        navbar.classList.toggle('scrolled', window.scrollY > 50);
+    $(document).ready(function () {
+        $("#signupForm").submit(function (e) {
+            e.preventDefault();
 
-        document.querySelectorAll('.reveal').forEach(el => {
-            const position = el.getBoundingClientRect().top;
-            if (position < window.innerHeight - 100) {
-                el.classList.add('active');
+            let username = $("#username").val().trim();
+            let email = $("#email").val().trim();
+            let password = $("#password").val().trim();
+            let confirmPassword = $("#confirmPassword").val().trim();
+            let message = $("#message");
+
+            if (password !== confirmPassword) {
+                message.html("<span style='color:red;'>Passwords do not match!</span>");
+                return;
             }
+
+            $.ajax({
+                url: "http://localhost:8080/auth/register",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    username: username,
+                    password: password,
+                    email: email,
+                    role: "USER"
+                }),
+                success: function (response) {
+                    message.html("<span style='color:lightgreen;'>Sign up successful!</span>");
+                    console.log("Response:", response);
+                    $("#signupForm")[0].reset();
+                    window.location.href = "signin.html";
+                },
+                error: function (xhr) {
+                    let errMsg = xhr.responseJSON ? xhr.responseJSON.message : "Server error";
+                    message.html("<span style='color:red;'>Error: " + errMsg + "</span>");
+                }
+            });
         });
     });
 
-    const toggles = document.getElementsByClassName('togglePassword');
-    const passwords = document.getElementsByClassName('password');
+    $(document).ready(function () {
+        $(window).on("scroll", function () {
+            let scrollY = $(this).scrollTop();
 
-    for (let i = 0; i < toggles.length; i++) {
-        toggles[i].addEventListener('click', () => {
-            const pwd = passwords[i];
-            if (pwd.type === 'password') {
-                pwd.type = 'text';
-                toggles[i].classList.remove('fa-eye-slash');
-                toggles[i].classList.add('fa-eye');
+            $(".navbar").toggleClass("scrolled", scrollY > 50);
+
+            $(".reveal").each(function () {
+                let position = $(this).offset().top;
+                if (position < scrollY + $(window).height() - 100) {
+                    $(this).addClass("active");
+                }
+            });
+        });
+
+        $(".togglePassword").on("click", function () {
+            let input = $(this).siblings(".password");
+            if (input.attr("type") === "password") {
+                input.attr("type", "text");
+                $(this).removeClass("fa-eye-slash").addClass("fa-eye");
             } else {
-                pwd.type = 'password';
-                toggles[i].classList.remove('fa-eye');
-                toggles[i].classList.add('fa-eye-slash');
+                input.attr("type", "password");
+                $(this).removeClass("fa-eye").addClass("fa-eye-slash");
             }
         });
-    }
+    });
 </script>
 </body>
 </html>

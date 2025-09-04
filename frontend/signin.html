@@ -450,33 +450,60 @@
   </div>
 </footer>
 
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  window.addEventListener('scroll', () => {
-    const navbar = document.querySelector('.navbar');
-    navbar.classList.toggle('scrolled', window.scrollY > 50);
+  $(document).ready(function() {
+    // Handle form submission
+    $(".signup-card form").submit(function(e) {
+      e.preventDefault();
 
-    document.querySelectorAll('.reveal').forEach(el => {
-      const position = el.getBoundingClientRect().top;
-      if (position < window.innerHeight - 100) {
-        el.classList.add('active');
-      }
+      const username = $(this).find('input[type="text"]').val();
+      const password = $("#password").val();
+
+      $.ajax({
+        url: "http://localhost:8080/auth/login",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({
+          username: username,
+          password: password
+        }),
+        success: function(response) {
+          alert("Login successful!");
+          console.log(response);
+
+          $("input[type='text'], #password").val('');
+        },
+        error: function(xhr, status, error) {
+          alert("Login failed: " + xhr.responseText);
+          console.error(xhr, status, error);
+        }
+      });
     });
-  });
 
-  const toggle = document.getElementById('togglePassword');
-  const pwd = document.getElementById('password');
+    $(window).on("scroll", function() {
+      const scrollTop = $(this).scrollTop();
 
-  toggle.addEventListener('click', () => {
-    if (pwd.type === 'password') {
-      pwd.type = 'text';
-      toggle.classList.remove('fa-eye-slash');
-      toggle.classList.add('fa-eye');
-    } else {
-      pwd.type = 'password';
-      toggle.classList.remove('fa-eye');
-      toggle.classList.add('fa-eye-slash');
-    }
+      $(".navbar").toggleClass("scrolled", scrollTop > 50);
+
+      $(".reveal").each(function() {
+        const position = $(this).offset().top;
+        const windowBottom = scrollTop + $(window).height();
+
+        if (position < windowBottom - 100) {
+          $(this).addClass("active");
+        }
+      });
+    });
+
+    $("#togglePassword").on("click", function() {
+      const $pwd = $("#password");
+      const type = $pwd.attr("type") === "password" ? "text" : "password";
+      $pwd.attr("type", type);
+
+      $(this).toggleClass("fa-eye fa-eye-slash");
+    });
   });
 </script>
 </body>

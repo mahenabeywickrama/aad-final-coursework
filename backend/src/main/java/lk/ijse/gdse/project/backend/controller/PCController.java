@@ -75,15 +75,23 @@ public class PCController {
     }
 
     @GetMapping("getFromPage")
-    public ResponseEntity<APIResponse> getAllPCs(
+    public ResponseEntity<APIResponse> getPCs(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(value = "search", required = false) String searchValue) {
 
-        Page<PC> pcPage = pcService.getAllPCs(PageRequest.of(page, size));
+        Page<PC> pcPage;
 
-        Map<String,Object> response = new HashMap<>();
+        if (searchValue != null && !searchValue.isEmpty()) {
+            pcPage = pcService.searchPCs(searchValue, PageRequest.of(page, size));
+        } else {
+            pcPage = pcService.getAllPCs(PageRequest.of(page, size));
+        }
+
+        Map<String, Object> response = new HashMap<>();
         response.put("data", pcPage.getContent());
         response.put("totalItems", pcPage.getTotalElements());
+
         return ResponseEntity.ok(
                 new APIResponse(
                         200,

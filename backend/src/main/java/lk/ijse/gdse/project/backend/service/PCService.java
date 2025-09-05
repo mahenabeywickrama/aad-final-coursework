@@ -14,4 +14,5 @@ public interface PCService {
     PCDTO findPCById(String pcId);
     List<PCDTO> getPCs();
     public Page<PC> getAllPCs(Pageable pageable);
+    public Page<PC> searchPCs(String searchValue, Pageable pageable);
 }

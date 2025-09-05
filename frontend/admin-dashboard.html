@@ -9,6 +9,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+
   <style>
     body {
       background: #0a0a0f;
@@ -43,7 +45,11 @@
       color: #fff;
     }
 
-    .sidebar a {
+    .sidebar a.brand {
+      text-decoration: none;
+    }
+
+    .sidebar a:not(.brand) {
       display: block;
       color: #bbb;
       padding: 12px 15px;
@@ -54,7 +60,7 @@
       transition: all 0.1s linear;
     }
 
-    .sidebar a:hover, .sidebar a.active {
+    .sidebar a:hover:not(.brand), .sidebar a.active:not(.brand) {
       background: rgba(0,247,255,0.2);
       color: #00f7ff;
       border-left: 3px solid #00f7ff;
@@ -308,6 +314,17 @@
       100% { background-position: 0% 50%; }
     }
 
+    #pcsTable {
+      width: 100% !important;
+    }
+
+    .dataTables_wrapper {
+      width: 100% !important;
+    }
+
+    .card .table-responsive {
+      margin: 0 -10px;
+    }
 
   </style>
 </head>
@@ -315,7 +332,7 @@
 
 <!-- Sidebar -->
 <div class="sidebar">
-  <h2>Core<span>One</span></h2>
+  <a href="index.html" class="brand"><h2>Core<span>One</span></h2></a>
   <a href="#" class="active"><i class="fas fa-home"></i> Dashboard</a>
   <a href="#"><i class="fas fa-desktop"></i> Add a PC</a>
   <a href="#"><i class="fas fa-users"></i> Manage Users</a>
@@ -557,28 +574,21 @@
         <div class="card">
           <h5 class="mb-3"><i class="fas fa-desktop me-2"></i> Saved PCs</h5>
           <div class="table-responsive">
-            <table class="table table-dark table-striped align-middle">
+            <table id="pcsTable" class="table table-striped table-hover">
               <thead>
               <tr>
-                <th>PC Name</th>
+                <th>Name</th>
                 <th>Series</th>
                 <th>CPU</th>
                 <th>GPU</th>
                 <th>RAM</th>
                 <th>Storage</th>
                 <th>Price</th>
-                <th>Sales</th>
+                <th>Total Sales</th>
                 <th>Actions</th>
               </tr>
               </thead>
-              <tbody id="pcsTableBody">
-              </tbody>
             </table>
-            <div class="d-flex justify-content-end mt-2">
-              <nav>
-                <ul class="pagination" id="pcsPagination"></ul>
-              </nav>
-            </div>
 
           </div>
         </div>
@@ -589,6 +599,8 @@
 
 
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 <script>
   $(document).ready(function () {
     // const token = localStorage.getItem("accessToken");
@@ -635,9 +647,6 @@
     //   window.location.href = "signin.html";
     // });
 
-    let currentPage = 1;
-    const pageSize = 10;
-
     document.getElementById("pcImage").addEventListener("change", function(event){
       const file = event.target.files[0];
       if(file){
@@ -669,165 +678,78 @@
       }
     });
 
-    loadAllPCs();
-
     $("#addPCForm").on("submit", function(e) {
       e.preventDefault();
 
       const editingId = $(this).data("editingId");
-      const pcData = {
-        id: editingId || null,
-        name: $("#pcName").val(),
-        series: $("#pcSeries").val(),
-        cpu: $("#pcCPU").val(),
-        cpuCooler: $("#pcCooler").val(),
-        ram: $("#pcRAM").val(),
-        gpu: $("#pcGPU").val(),
-        motherboard: $("#pcMotherboard").val(),
-        storage: $("#pcStorage").val(),
-        psu: $("#pcPSU").val(),
-        rgbFans: $("#pcFans").val(),
-        pcCase: $("#pcCase").val(),
-        operatingSystem: $("#pcOS").val(),
-        price: parseFloat($("#pcPrice").val()),
-        imageUrl: null,
-        totalSales: 0
-      };
+      const fileInput = $("#pcImage")[0];
+      const file = fileInput.files[0];
 
-      $.ajax({
-        url: editingId
-                ? "http://localhost:8080/api/v1/admin/pc/update"
-                : "http://localhost:8080/api/v1/admin/pc/create",
-        type: editingId ? "PUT" : "POST",
-        contentType: "application/json",
-        headers: {
-          "Authorization": "Bearer " + localStorage.getItem("accessToken")
-        },
-        data: JSON.stringify(pcData),
-        success: function(response) {
-          alert(response.message || (editingId ? "PC Updated!" : "PC Created!"));
-          clearForm();
-          loadAllPCs();
-        },
-        error: function(xhr) {
-          console.error(xhr);
-          alert("Error: " + (xhr.responseJSON?.message || "Something went wrong"));
-        }
-      });
+      function sendPCData(imageUrl) {
+        const pcData = {
+          id: editingId || null,
+          name: $("#pcName").val(),
+          series: $("#pcSeries").val(),
+          cpu: $("#pcCPU").val(),
+          cpuCooler: $("#pcCooler").val(),
+          ram: $("#pcRAM").val(),
+          gpu: $("#pcGPU").val(),
+          motherboard: $("#pcMotherboard").val(),
+          storage: $("#pcStorage").val(),
+          psu: $("#pcPSU").val(),
+          rgbFans: $("#pcFans").val(),
+          pcCase: $("#pcCase").val(),
+          operatingSystem: $("#pcOS").val(),
+          price: parseFloat($("#pcPrice").val()),
+          imageUrl: imageUrl || null,
+          totalSales: 0
+        };
+
+        $.ajax({
+          url: editingId
+                  ? "http://localhost:8080/api/v1/admin/pc/update"
+                  : "http://localhost:8080/api/v1/admin/pc/create",
+          type: editingId ? "PUT" : "POST",
+          contentType: "application/json",
+          headers: {
+            "Authorization": "Bearer " + localStorage.getItem("accessToken")
+          },
+          data: JSON.stringify(pcData),
+          success: function(response) {
+            alert(response.message || (editingId ? "PC Updated!" : "PC Created!"));
+            clearForm();
+            table.ajax.reload(null, false);
+          },
+          error: function(xhr) {
+            console.error(xhr);
+            alert("Error: " + (xhr.responseJSON?.message || "Something went wrong"));
+          }
+        });
+      }
+
+      if (file) {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', 'prebuilt_pcs');
+        formData.append('folder', 'prebuilt_pcs');
+
+        fetch('https://api.cloudinary.com/v1_1/djsdwv2na/image/upload', {
+          method: 'POST',
+          body: formData
+        })
+                .then(res => res.json())
+                .then(data => {
+                  sendPCData(data.secure_url);
+                })
+                .catch(err => {
+                  console.error('Image upload failed:', err);
+                  alert('Image upload failed. PC not saved.');
+                });
+      } else {
+        sendPCData(null);
+      }
     });
 
-    function loadAllPCs(page = currentPage) {
-      currentPage = page;
-
-      $.ajax({
-        url: `http://localhost:8080/api/v1/admin/pc/getFromPage?page=${page-1}&size=${pageSize}`,
-        type: "GET",
-        headers: {
-          "Authorization": "Bearer " + localStorage.getItem("accessToken")
-        },
-        success: function(response) {
-          const tbody = $("#pcsTableBody");
-          tbody.empty();
-
-          console.log(response);
-
-          const pcs = response.data.data;
-          const totalItems = response.data.totalItems;
-          const totalPages = Math.ceil(totalItems / pageSize);
-
-          pcs.forEach(pc => {
-            const row = $(`
-              <tr data-id="${pc.id}">
-                <td>${pc.name}</td>
-                <td>${pc.series}</td>
-                <td>${pc.cpu}</td>
-                <td>${pc.gpu}</td>
-                <td>${pc.ram}</td>
-                <td>${pc.storage}</td>
-                <td>${pc.price}</td>
-                <td>${pc.totalSales}</td>
-                <td>
-                  <button class="btn btn-sm btn-outline-primary edit-btn" title="Edit">
-                    <i class="fas fa-edit"></i>
-                  </button>
-                  <button class="btn btn-sm btn-outline-danger delete-btn" title="Delete">
-                    <i class="fas fa-trash-alt"></i>
-                  </button>
-                </td>
-              </tr>
-            `);
-
-            row.find(".edit-btn").on("click", function() {
-              $("#pcName").val(pc.name);
-              $("#pcSeries").val(pc.series);
-              $("#pcCPU").val(pc.cpu);
-              $("#pcCooler").val(pc.cpuCooler);
-              $("#pcRAM").val(pc.ram);
-              $("#pcGPU").val(pc.gpu);
-              $("#pcMotherboard").val(pc.motherboard);
-              $("#pcStorage").val(pc.storage);
-              $("#pcPSU").val(pc.psu);
-              $("#pcFans").val(pc.rgbFans);
-              $("#pcCase").val(pc.pcCase);
-              $("#pcOS").val(pc.operatingSystem);
-              $("#pcPrice").val(pc.price);
-              $("#previewImage").attr("src", pc.imageUrl).show();
-
-              $("#addPCForm").data("editingId", pc.id);
-            });
-
-            row.find(".delete-btn").on("click", function() {
-              if(confirm(`Are you sure you want to delete "${pc.name}"?`)) {
-                $.ajax({
-                  url: `http://localhost:8080/api/v1/admin/pc/delete/${pc.id}`,
-                  type: "DELETE",
-                  headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("accessToken")
-                  },
-                  success: function() {
-                    alert("PC deleted successfully!");
-                    loadAllPCs();
-                    clearForm();
-                  },
-                  error: function(xhr) {
-                    console.error(xhr);
-                    alert("Failed to delete PC: " + (xhr.responseJSON?.message || xhr.statusText));
-                  }
-                });
-              }
-            });
-
-            tbody.append(row);
-          });
-
-          renderPagination(totalPages);
-        },
-        error: function(xhr) {
-          console.error(xhr);
-          alert("Failed to load PCs: " + (xhr.responseJSON?.message || xhr.statusText));
-        }
-      });
-    }
-
-    function renderPagination(totalPages) {
-      const pagination = $("#pcsPagination");
-      pagination.empty();
-
-      for(let i = 1; i <= totalPages; i++) {
-        const pageItem = $(`
-          <li class="page-item ${i === currentPage ? 'active' : ''}">
-            <a class="page-link" href="#">${i}</a>
-          </li>
-        `);
-
-        pageItem.on("click", function(e) {
-          e.preventDefault();
-          loadAllPCs(i);
-        });
-
-        pagination.append(pageItem);
-      }
-    }
 
     function clearForm() {
       $("#addPCForm")[0].reset();
@@ -838,6 +760,111 @@
     $("#clearFormBtn").on("click", function() {
       clearForm();
     });
+
+    const table = $('#pcsTable').DataTable({
+      processing: false,
+      serverSide: true,
+      searching: true,
+      ajax: function (data, callback) {
+        const page = Math.floor(data.start / data.length);
+        const size = data.length;
+        const searchValue = data.search.value;
+
+        $.ajax({
+          url: `http://localhost:8080/api/v1/admin/pc/getFromPage?page=${page}&size=${size}&search=${encodeURIComponent(searchValue)}`,
+          type: "GET",
+          headers: {
+            "Authorization": "Bearer " + localStorage.getItem("accessToken")
+          },
+          success: function (response) {
+            callback({
+              draw: data.draw,
+              recordsTotal: response.data.totalItems,
+              recordsFiltered: response.data.totalItems,
+              data: response.data.data
+            });
+          },
+          error: function (xhr) {
+            console.error(xhr);
+            alert("Failed to load PCs: " + (xhr.responseJSON?.message || xhr.statusText));
+          }
+        });
+      },
+      columns: [
+        { data: 'name' },
+        { data: 'series' },
+        { data: 'cpu' },
+        { data: 'gpu' },
+        { data: 'ram' },
+        { data: 'storage' },
+        { data: 'price' },
+        { data: 'totalSales' },
+        {
+          data: null,
+          render: function (data, type, row) {
+            return `
+                            <button class="btn btn-sm btn-outline-primary edit-btn" data-id="${row.id}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger delete-btn" data-id="${row.id}">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        `;
+          }
+        }
+      ]
+    });
+
+    let searchTimeout;
+
+    $('#pcsTable_filter input').off().on('keyup', function () {
+              clearTimeout(searchTimeout);
+              const query = $(this).val();
+
+              searchTimeout = setTimeout(function () {
+                table.search(query).draw();
+              }, 300);
+            });
+
+    $('#pcsTable').on('click', '.edit-btn', function () {
+      const pc = table.row($(this).closest('tr')).data();
+      $('#addPCForm').data('editingId', pc.id);
+      $('#pcName').val(pc.name);
+      $('#pcSeries').val(pc.series);
+      $('#pcCPU').val(pc.cpu);
+      $('#pcCooler').val(pc.cpuCooler);
+      $('#pcRAM').val(pc.ram);
+      $('#pcGPU').val(pc.gpu);
+      $('#pcMotherboard').val(pc.motherboard);
+      $('#pcStorage').val(pc.storage);
+      $('#pcPSU').val(pc.psu);
+      $('#pcFans').val(pc.rgbFans);
+      $('#pcCase').val(pc.pcCase);
+      $('#pcOS').val(pc.operatingSystem);
+      $('#pcPrice').val(pc.price);
+      if(pc.imageUrl){
+        $('#previewImage').attr('src', pc.imageUrl).show();
+      }
+      $(".sidebar a:contains('Add a PC')").click();
+    });
+
+
+    $('#pcsTable').on('click', '.delete-btn', function () {
+      const pc = table.row($(this).closest('tr')).data();
+      if (confirm(`Delete ${pc.name}?`)) {
+        $.ajax({
+          url: `http://localhost:8080/api/v1/admin/pc/delete/${pc.id}`,
+          type: "DELETE",
+          headers: {
+            "Authorization": "Bearer " + localStorage.getItem("accessToken")
+          },
+          success: function () {
+            table.ajax.reload();
+          }
+        });
+      }
+    });
+
   });
 
 </script>

@@ -67,4 +67,9 @@ public class PCServiceImpl implements PCService {
         return pcRepository.findAll(pageable);
     }
 
+    @Override
+    public Page<PC> searchPCs(String searchValue, Pageable pageable) {
+        return pcRepository.searchPCs(searchValue, pageable);
+    }
+
 }

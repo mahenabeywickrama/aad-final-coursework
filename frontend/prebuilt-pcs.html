@@ -3,19 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home | CoreOne</title>
+    <title>Prebuilt PCs Showcase</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-
-    <!--Fonts-->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Exo:ital,wght@0,100..900&display=swap" rel="stylesheet">
     <style>
         body {
             background: #0a0a0f;
@@ -85,44 +76,80 @@
             color: #00f7ff;
         }
 
-        .hero {
-            background: radial-gradient(circle at top, rgba(0, 247, 255, 0.2), rgba(10, 10, 15, 1));
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            text-align: center;
-            color: white;
+        #pcsContainer {
+            gap: 20px;
+        }
+
+        .pc-card {
+            background: rgba(255,255,255,0.05);
+            padding: 20px;
+            border-radius: 16px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-align: left;
             position: relative;
-            overflow: hidden;
+            overflow: visible;
         }
 
-        .hero h1 {
-            font-size: 3.8rem;
-            font-weight: bold;
-            text-shadow: 0px 0px 20px rgba(0,247,255,0.7);
+        .pc-name, .badges, .price {
+            text-align: left;
         }
 
-        .hero p {
-            font-size: 1.3rem;
-            color: #ccc;
-            margin-top: 15px;
+        .pc-card:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 0 30px 6px rgba(0, 247, 255, 0.5);
         }
 
-        .btn-glow {
-            background: #00f7ff;
-            color: #000;
-            font-weight: 600;
-            padding: 12px 35px;
-            border-radius: 50px;
-            margin: 10px;
-            box-shadow: 0px 0px 15px #00f7ff;
-            transition: all 0.3s ease;
+        .pc-img {
+            width: 100%;
+            height: 240px;
+            object-fit: contain;
+            margin-top: -40px;
+            margin-bottom: 12px;
+            background: transparent;
+            border-radius: 0;
         }
 
-        .btn-glow:hover {
-            background: #00c2cc;
-            color: #fff;
-            box-shadow: 0px 0px 25px #00f7ff, 0px 0px 40px #00f7ff;
+        .pc-name {
+            color: #ffffff;
+            font-size: 1.1rem;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .badges .badge {
+            font-size: 0.75rem;
+            padding: 0.35em 0.65em;
+            border-radius: 12px;
+            margin-right: 5px;
+            background: #0a0a0f;
+            color: #00f7ff;
+            border: 1px solid #00f7ff;
+        }
+
+        .price {
+            font-size: 1.05rem;
+            color: #00f7ff;
+            font-weight: 700;
+            text-shadow: 0 0 5px #00f7ff;
+        }
+
+        .sale-badge {
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform: translate(30%, -50%);
+            background: #0a0a0f;
+            color: #00f7ff;
+            border: 1px solid #00f7ff;
+            font-size: 0.75rem;
+            padding: 0.15em 0.7em;
+            border-radius: 8px;
+            text-transform: uppercase;
+            z-index: 2;
+        }
+
+        @media(max-width: 768px){
+            body { padding: 15px; }
         }
 
         .footer {
@@ -265,7 +292,6 @@
                 margin-top: 10px;
             }
         }
-
     </style>
 </head>
 <body>
@@ -286,7 +312,7 @@
             <!-- Center Navigation Links -->
             <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
                 <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="prebuilt-pcs.html">Prebuilt PCs</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Prebuilt PCs</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">Custom Build</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">About</a></li>
             </ul>
@@ -302,15 +328,13 @@
     </div>
 </nav>
 
-<!-- Hero -->
-<section class="hero">
-    <div class="container">
-        <h1>Unleash The Power of Custom PCs</h1>
-        <p>Built for gamers, creators, and performance enthusiasts.</p>
-        <a href="#" class="btn btn-glow">Shop Prebuilts</a>
-        <a href="#" class="btn btn-outline-light rounded-pill px-4 py-2">Build Your Own</a>
+<div class="container my-5">
+    <h2 class="text-center mb-4" style="color:#00f7ff; font-family:'Orbitron',sans-serif;">Our Prebuilt PCs</h2>
+    <div id="pcsContainer" class="row g-4">
+        <!-- Cards injected here -->
     </div>
-</section>
+</div>
+
 
 <footer class="footer">
     <div class="container">
@@ -378,8 +402,7 @@
     </div>
 </footer>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script>
     $(window).on("scroll", function () {
         const navbar = $(".navbar");
@@ -401,7 +424,55 @@
         });
     });
 
+    $(document).ready(function() {
+        function loadPCs() {
+            $.ajax({
+                url: "http://localhost:8080/api/v1/pc/all",
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("accessToken")
+                },
+                success: function(data) {
+                    const container = $("#pcsContainer");
+                    container.empty();
 
+                    data.forEach(pc => {
+                        const card = `
+                        <div class="col-sm-6 col-md-4 col-lg-3">
+  <div class="pc-card">
+
+    <!-- Optional Sale Badge -->
+    <span class="sale-badge">SALE</span>
+
+    <!-- PC Image -->
+    <img src="${pc.imageUrl}" alt="${pc.name}" class="pc-img" />
+
+    <!-- Name -->
+    <h3 class="pc-name">${pc.name}</h3>
+
+    <!-- Badges -->
+    <div class="badges mb-2">
+      <span class="badge bg-primary">Best for 1080p</span>
+    </div>
+
+    <!-- Price -->
+    <p class="price">$${pc.price}</p>
+  </div>
+</div>
+                    `;
+                        container.append(card);
+                    });
+                },
+                error: function(err) {
+                    console.error("Failed to load PCs", err);
+                    $("#pcsContainer").html("<p style='color:red;text-align:center'>Failed to load PCs</p>");
+                }
+            });
+        }
+
+        loadPCs();
+    });
 </script>
+
 </body>
 </html>

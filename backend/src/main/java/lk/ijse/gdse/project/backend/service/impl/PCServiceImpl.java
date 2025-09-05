@@ -8,6 +8,8 @@ import lk.ijse.gdse.project.backend.repository.PCRepository;
 import lk.ijse.gdse.project.backend.service.PCService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -59,4 +61,10 @@ public class PCServiceImpl implements PCService {
 
         return modelMapper.map(pcs, new TypeToken<List<PCDTO>>() {}.getType());
     }
+
+    @Override
+    public Page<PC> getAllPCs(Pageable pageable) {
+        return pcRepository.findAll(pageable);
+    }
+
 }

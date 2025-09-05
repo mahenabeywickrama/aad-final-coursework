@@ -1,6 +1,7 @@
 package lk.ijse.gdse.project.backend.dto;
 
 public class PCDTO {
+    private Long id;
     private String name;
     private String series;
     private String cpu;
@@ -21,6 +22,7 @@ public class PCDTO {
     }
 
     public PCDTO(Long id, String name, String series, String cpu, String cpuCooler, String ram, String gpu, String motherboard, String storage, String psu, String rgbFans, String pcCase, String operatingSystem, Double price, String imageUrl, Integer totalSales) {
+        this.id = id;
         this.name = name;
         this.series = series;
         this.cpu = cpu;
@@ -36,6 +38,14 @@ public class PCDTO {
         this.price = price;
         this.imageUrl = imageUrl;
         this.totalSales = totalSales;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {

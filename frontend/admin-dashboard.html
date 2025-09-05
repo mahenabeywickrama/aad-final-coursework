@@ -373,7 +373,7 @@
     </h1>
     <div class="row">
       <!-- Left Side: Form -->
-      <div class="col-lg-6">
+      <div class="col-lg-4">
         <div class="pc-form-timeline">
           <div class="timeline-progress" id="timelineProgress"></div>
           <form id="addPCForm">
@@ -392,7 +392,7 @@
               <div class="timeline-icon"><i class="fas fa-layer-group"></i></div>
               <div class="timeline-content form-floating">
                 <select class="form-control" id="pcSeries" required>
-                  <option value="" disabled selected>Select Series</option>
+                  <option value="" disabled selected>Series</option>
                   <option value="PRO">PRO</option>
                   <option value="ELITE">ELITE</option>
                   <option value="ULTIMATE">ULTIMATE</option>
@@ -511,9 +511,12 @@
             </div>
 
             <!-- Submit -->
-            <div class="text-center mt-4">
+            <div class="d-flex justify-content-end mt-4 gap-3">
               <button type="submit" class="btn neon-btn px-5">
                 <i class="fas fa-plus-circle me-2"></i> Add PC
+              </button>
+              <button type="button" class="btn btn-outline-light px-4" id="clearFormBtn">
+                <i class="fas fa-eraser me-2"></i> Clear
               </button>
             </div>
           </form>
@@ -521,7 +524,7 @@
       </div>
 
       <!-- Right Side: Stats + Table -->
-      <div class="col-lg-6">
+      <div class="col-lg-8">
         <!-- Stats Cards -->
         <div class="row mb-4">
           <div class="col-md-6 col-lg-3">
@@ -545,7 +548,7 @@
           <div class="col-md-6 col-lg-3">
             <div class="card text-center">
               <h5><i class="fas fa-star me-1"></i> Top Series</h5>
-              <p>Gaming Pro</p>
+              <p>Pro</p>
             </div>
           </div>
         </div>
@@ -565,31 +568,18 @@
                 <th>Storage</th>
                 <th>Price</th>
                 <th>Sales</th>
+                <th>Actions</th>
               </tr>
               </thead>
-              <tbody>
-              <tr>
-                <td>CoreOne Alpha</td>
-                <td>Alpha Series</td>
-                <td>Intel i7-12700K</td>
-                <td>RTX 3070</td>
-                <td>16GB DDR4</td>
-                <td>1TB SSD</td>
-                <td>$1,500</td>
-                <td>45</td>
-              </tr>
-              <tr>
-                <td>CoreOne Stealth</td>
-                <td>Stealth Series</td>
-                <td>Ryzen 7 5800X</td>
-                <td>RTX 3080</td>
-                <td>32GB DDR4</td>
-                <td>2TB SSD</td>
-                <td>$2,200</td>
-                <td>30</td>
-              </tr>
+              <tbody id="pcsTableBody">
               </tbody>
             </table>
+            <div class="d-flex justify-content-end mt-2">
+              <nav>
+                <ul class="pagination" id="pcsPagination"></ul>
+              </nav>
+            </div>
+
           </div>
         </div>
       </div>
@@ -598,7 +588,7 @@
 </div>
 
 
-  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script>
   $(document).ready(function () {
     // const token = localStorage.getItem("accessToken");
@@ -645,6 +635,9 @@
     //   window.location.href = "signin.html";
     // });
 
+    let currentPage = 1;
+    const pageSize = 10;
+
     document.getElementById("pcImage").addEventListener("change", function(event){
       const file = event.target.files[0];
       if(file){
@@ -676,41 +669,174 @@
       }
     });
 
+    loadAllPCs();
+
     $("#addPCForm").on("submit", function(e) {
       e.preventDefault();
 
-      // Gather form data
+      const editingId = $(this).data("editingId");
       const pcData = {
+        id: editingId || null,
         name: $("#pcName").val(),
         series: $("#pcSeries").val(),
         cpu: $("#pcCPU").val(),
-        cooler: $("#pcCooler").val(),
+        cpuCooler: $("#pcCooler").val(),
         ram: $("#pcRAM").val(),
         gpu: $("#pcGPU").val(),
         motherboard: $("#pcMotherboard").val(),
         storage: $("#pcStorage").val(),
         psu: $("#pcPSU").val(),
-        fans: $("#pcFans").val(),
+        rgbFans: $("#pcFans").val(),
         pcCase: $("#pcCase").val(),
-        os: $("#pcOS").val(),
-        price: parseFloat($("#pcPrice").val())
+        operatingSystem: $("#pcOS").val(),
+        price: parseFloat($("#pcPrice").val()),
+        imageUrl: null,
+        totalSales: 0
       };
 
       $.ajax({
-        url: "http://localhost:8080/api/v1/job/create",
-        method: "POST",
+        url: editingId
+                ? "http://localhost:8080/api/v1/admin/pc/update"
+                : "http://localhost:8080/api/v1/admin/pc/create",
+        type: editingId ? "PUT" : "POST",
         contentType: "application/json",
+        headers: {
+          "Authorization": "Bearer " + localStorage.getItem("accessToken")
+        },
         data: JSON.stringify(pcData),
         success: function(response) {
-          alert(response.message || "PC Created Successfully");
-          // Optionally reset form
-          $("#addPCForm")[0].reset();
-          $("#previewImage").hide();
+          alert(response.message || (editingId ? "PC Updated!" : "PC Created!"));
+          clearForm();
+          loadAllPCs();
         },
         error: function(xhr) {
-          alert("Error: " + xhr.responseText);
+          console.error(xhr);
+          alert("Error: " + (xhr.responseJSON?.message || "Something went wrong"));
         }
       });
+    });
+
+    function loadAllPCs(page = currentPage) {
+      currentPage = page;
+
+      $.ajax({
+        url: `http://localhost:8080/api/v1/admin/pc/getFromPage?page=${page-1}&size=${pageSize}`,
+        type: "GET",
+        headers: {
+          "Authorization": "Bearer " + localStorage.getItem("accessToken")
+        },
+        success: function(response) {
+          const tbody = $("#pcsTableBody");
+          tbody.empty();
+
+          console.log(response);
+
+          const pcs = response.data.data;
+          const totalItems = response.data.totalItems;
+          const totalPages = Math.ceil(totalItems / pageSize);
+
+          pcs.forEach(pc => {
+            const row = $(`
+              <tr data-id="${pc.id}">
+                <td>${pc.name}</td>
+                <td>${pc.series}</td>
+                <td>${pc.cpu}</td>
+                <td>${pc.gpu}</td>
+                <td>${pc.ram}</td>
+                <td>${pc.storage}</td>
+                <td>${pc.price}</td>
+                <td>${pc.totalSales}</td>
+                <td>
+                  <button class="btn btn-sm btn-outline-primary edit-btn" title="Edit">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="btn btn-sm btn-outline-danger delete-btn" title="Delete">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </td>
+              </tr>
+            `);
+
+            row.find(".edit-btn").on("click", function() {
+              $("#pcName").val(pc.name);
+              $("#pcSeries").val(pc.series);
+              $("#pcCPU").val(pc.cpu);
+              $("#pcCooler").val(pc.cpuCooler);
+              $("#pcRAM").val(pc.ram);
+              $("#pcGPU").val(pc.gpu);
+              $("#pcMotherboard").val(pc.motherboard);
+              $("#pcStorage").val(pc.storage);
+              $("#pcPSU").val(pc.psu);
+              $("#pcFans").val(pc.rgbFans);
+              $("#pcCase").val(pc.pcCase);
+              $("#pcOS").val(pc.operatingSystem);
+              $("#pcPrice").val(pc.price);
+              $("#previewImage").attr("src", pc.imageUrl).show();
+
+              $("#addPCForm").data("editingId", pc.id);
+            });
+
+            row.find(".delete-btn").on("click", function() {
+              if(confirm(`Are you sure you want to delete "${pc.name}"?`)) {
+                $.ajax({
+                  url: `http://localhost:8080/api/v1/admin/pc/delete/${pc.id}`,
+                  type: "DELETE",
+                  headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("accessToken")
+                  },
+                  success: function() {
+                    alert("PC deleted successfully!");
+                    loadAllPCs();
+                    clearForm();
+                  },
+                  error: function(xhr) {
+                    console.error(xhr);
+                    alert("Failed to delete PC: " + (xhr.responseJSON?.message || xhr.statusText));
+                  }
+                });
+              }
+            });
+
+            tbody.append(row);
+          });
+
+          renderPagination(totalPages);
+        },
+        error: function(xhr) {
+          console.error(xhr);
+          alert("Failed to load PCs: " + (xhr.responseJSON?.message || xhr.statusText));
+        }
+      });
+    }
+
+    function renderPagination(totalPages) {
+      const pagination = $("#pcsPagination");
+      pagination.empty();
+
+      for(let i = 1; i <= totalPages; i++) {
+        const pageItem = $(`
+          <li class="page-item ${i === currentPage ? 'active' : ''}">
+            <a class="page-link" href="#">${i}</a>
+          </li>
+        `);
+
+        pageItem.on("click", function(e) {
+          e.preventDefault();
+          loadAllPCs(i);
+        });
+
+        pagination.append(pageItem);
+      }
+    }
+
+    function clearForm() {
+      $("#addPCForm")[0].reset();
+      $("#previewImage").hide().attr("src", "");
+      $("#addPCForm").removeData("editingId");
+    }
+
+    $("#clearFormBtn").on("click", function() {
+      clearForm();
     });
   });
 

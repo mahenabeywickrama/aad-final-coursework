@@ -1,5 +1,6 @@
 package lk.ijse.gdse.project.backend.util;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,7 +35,21 @@ public class JWTAuthFilter extends OncePerRequestFilter {
             return;
         }
         jwtToken = authHeader.substring(7);
-        username=jwtUtil.extractUsername(jwtToken);
+
+        try {
+            username = jwtUtil.extractUsername(jwtToken);
+        } catch (ExpiredJwtException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"status\":401,\"message\":\"JWT Token Expired\"}");
+            return;
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"status\":400,\"message\":\"Invalid JWT\"}");
+            return;
+        }
+
         if (username!=null && SecurityContextHolder.getContext()
                 .getAuthentication()==null) {
             UserDetails userDetails=userDetailsService

@@ -76,6 +76,58 @@
             color: #00f7ff;
         }
 
+        .section-title {
+            color: #00f7ff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(0,247,255,0.6);
+        }
+
+        .hero-section {
+            background-image: url('images/background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(10, 10, 15, 0.7);
+        }
+
+        .hero-section h1 {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-section p {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-section .btn {
+            position: relative;
+            z-index: 1;
+            border: 1px solid #00f7ff;
+            color: #00f7ff;
+            transition: 0.3s;
+        }
+
+        .hero-section .btn:hover {
+            background: #00f7ff;
+            color: #000;
+            box-shadow: 0 0 15px #00f7ff;
+        }
+
         #pcsContainer {
             gap: 20px;
         }
@@ -137,7 +189,7 @@
             position: absolute;
             top: 0;
             left: 0;
-            transform: translate(30%, -50%);
+            transform: translate(60%, -50%);
             background: #0a0a0f;
             color: #00f7ff;
             border: 1px solid #00f7ff;
@@ -328,11 +380,20 @@
     </div>
 </nav>
 
-<div class="container my-5">
-    <h2 class="text-center mb-4" style="color:#00f7ff; font-family:'Orbitron',sans-serif;">Our Prebuilt PCs</h2>
-    <div id="pcsContainer" class="row g-4">
-        <!-- Cards injected here -->
+<!-- Hero Section -->
+<section class="hero-section text-center text-white py-5">
+    <div class="container">
+        <h1 class="display-4 mb-3" style="font-family: 'Orbitron', sans-serif; color: #00f7ff; text-shadow: 0 0 15px #00f7ff;">Next-Level Gaming PCs</h1>
+        <p class="lead mb-4" style="color: #bbb;">High-performance prebuilt rigs built for gamers, creators, and enthusiasts.</p>
+        <a href="#pcs" class="btn btn-lg btn-outline-info">
+            <i class="fas fa-arrow-down me-2"></i> Browse PCs
+        </a>
     </div>
+</section>
+
+<div id="pcs" class="container my-5">
+    <h2 class="section-title text-center mb-5">Our Prebuilt PCs</h2>
+    <div id="pcsContainer" class="row g-4"></div>
 </div>
 
 
@@ -438,30 +499,38 @@
 
                     data.forEach(pc => {
                         const card = `
-                        <div class="col-sm-6 col-md-4 col-lg-3">
-  <div class="pc-card">
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="pc-card">
 
-    <!-- Optional Sale Badge -->
-    <span class="sale-badge">SALE</span>
+        <!-- SALE badge (optional) -->
+        <span class="sale-badge">SALE</span>
 
-    <!-- PC Image -->
-    <img src="${pc.imageUrl}" alt="${pc.name}" class="pc-img" />
+        <!-- PC Image -->
+        <img src="${pc.imageUrl}" alt="${pc.name}" class="pc-img" />
 
-    <!-- Name -->
-    <h3 class="pc-name">${pc.name}</h3>
+        <!-- PC Name -->
+        <h3 class="pc-name">${pc.name}</h3>
 
-    <!-- Badges -->
-    <div class="badges mb-2">
-      <span class="badge bg-primary">Best for 1080p</span>
+        <!-- Performance Badges -->
+        <div class="badges mb-2">
+          ${pc.badges && pc.badges.length > 0
+                            ? pc.badges.map(b => `<span class="badge">${b}</span>`).join("")
+                            : `<span class="badge">Best for 1080p</span><span class="badge">Best for 4k</span>`}
+        </div>
+
+        <!-- Price -->
+        <p class="price">$${pc.price}</p>
+
+        <!-- Buy Button -->
+        <button class="btn btn-sm btn-outline-info w-100 mt-2">
+          <i class="fas fa-shopping-cart me-2"></i> Buy Now
+        </button>
+      </div>
     </div>
-
-    <!-- Price -->
-    <p class="price">$${pc.price}</p>
-  </div>
-</div>
-                    `;
+  `;
                         container.append(card);
                     });
+
                 },
                 error: function(err) {
                     console.error("Failed to load PCs", err);

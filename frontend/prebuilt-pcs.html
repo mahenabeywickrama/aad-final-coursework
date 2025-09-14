@@ -128,10 +128,6 @@
             box-shadow: 0 0 15px #00f7ff;
         }
 
-        #pcsContainer {
-            gap: 20px;
-        }
-
         .pc-card {
             background: rgba(255,255,255,0.05);
             padding: 20px;
@@ -140,6 +136,7 @@
             text-align: left;
             position: relative;
             overflow: visible;
+            font-family: 'Exo', sans-serif;
         }
 
         .pc-name, .badges, .price {
@@ -182,7 +179,7 @@
             font-size: 1.05rem;
             color: #00f7ff;
             font-weight: 700;
-            text-shadow: 0 0 5px #00f7ff;
+            /*text-shadow: 0 0 5px #00f7ff;*/
         }
 
         .sale-badge {
@@ -198,6 +195,37 @@
             border-radius: 8px;
             text-transform: uppercase;
             z-index: 2;
+        }
+
+        .pc-img-wrapper {
+            position: relative;
+        }
+
+        .overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .pc-card:hover .overlay {
+            opacity: 1;
+        }
+
+        .overlay .btn {
+            border: 1px solid #00f7ff;
+            background: transparent;
+            color: #00f7ff;
+            transition: 0.3s;
+        }
+
+        .overlay .btn:hover {
+            background: #00f7ff;
+            color: #000;
+            box-shadow: 0 0 12px #00f7ff;
         }
 
         @media(max-width: 768px){
@@ -393,9 +421,64 @@
 
 <div id="pcs" class="container my-5">
     <h2 class="section-title text-center mb-5">Our Prebuilt PCs</h2>
-    <div id="pcsContainer" class="row g-4"></div>
-</div>
+    <div class="row">
+        <!-- Sidebar Filters -->
+        <aside class="col-lg-3 mb-4">
+            <div class="filter-box p-3 rounded">
+                <h5 class="mb-3 text-info"><i class="fas fa-sliders-h me-2"></i>Filters</h5>
 
+                <!-- Price Range -->
+                <div class="mb-4">
+                    <label class="form-label">Price Range ($)</label>
+                    <input type="range" class="form-range" min="500" max="5000" step="100" id="priceRange">
+                    <div class="d-flex justify-content-between">
+                        <small id="priceMin">500</small>
+                        <small id="priceMax">5000</small>
+                    </div>
+                </div>
+
+                <!-- Performance -->
+                <div class="mb-4">
+                    <label class="form-label">Performance</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="1080p" id="perf1080p">
+                        <label class="form-check-label" for="perf1080p">1080p Gaming</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="1440p" id="perf1440p">
+                        <label class="form-check-label" for="perf1440p">1440p Gaming</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="4k" id="perf4k">
+                        <label class="form-check-label" for="perf4k">4K Gaming</label>
+                    </div>
+                </div>
+
+                <!-- Brand -->
+                <div class="mb-4">
+                    <label class="form-label">Brand</label>
+                    <select class="form-select" id="brandSelect">
+                        <option value="">All Brands</option>
+                        <option value="intel">Intel</option>
+                        <option value="amd">AMD</option>
+                        <option value="nvidia">NVIDIA</option>
+                    </select>
+                </div>
+
+                <!-- Buttons -->
+                <div class="d-grid gap-2">
+                    <button id="applyFilters" class="btn btn-info">Apply Filters</button>
+                    <button id="clearFilters" class="btn btn-secondary">Clear</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Product Grid -->
+        <div class="col-lg-9">
+            <div id="pcsContainer" class="row g-4"></div>
+        </div>
+    </div>
+</div>
 
 <footer class="footer">
     <div class="container">
@@ -486,51 +569,15 @@
     });
 
     $(document).ready(function() {
+        let allPCs = [];
+
         function loadPCs() {
             $.ajax({
                 url: "http://localhost:8080/api/v1/pc/all",
                 method: "GET",
-                headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("accessToken")
-                },
                 success: function(data) {
-                    const container = $("#pcsContainer");
-                    container.empty();
-
-                    data.forEach(pc => {
-                        const card = `
-    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-      <div class="pc-card">
-
-        <!-- SALE badge (optional) -->
-        <span class="sale-badge">SALE</span>
-
-        <!-- PC Image -->
-        <img src="${pc.imageUrl}" alt="${pc.name}" class="pc-img" />
-
-        <!-- PC Name -->
-        <h3 class="pc-name">${pc.name}</h3>
-
-        <!-- Performance Badges -->
-        <div class="badges mb-2">
-          ${pc.badges && pc.badges.length > 0
-                            ? pc.badges.map(b => `<span class="badge">${b}</span>`).join("")
-                            : `<span class="badge">Best for 1080p</span><span class="badge">Best for 4k</span>`}
-        </div>
-
-        <!-- Price -->
-        <p class="price">$${pc.price}</p>
-
-        <!-- Buy Button -->
-        <button class="btn btn-sm btn-outline-info w-100 mt-2">
-          <i class="fas fa-shopping-cart me-2"></i> Buy Now
-        </button>
-      </div>
-    </div>
-  `;
-                        container.append(card);
-                    });
-
+                    allPCs = data;
+                    renderPCs(allPCs);
                 },
                 error: function(err) {
                     console.error("Failed to load PCs", err);
@@ -539,8 +586,82 @@
             });
         }
 
+        function renderPCs(pcs) {
+            const container = $("#pcsContainer");
+            container.empty();
+            if (pcs.length === 0) {
+                container.html("<p style='color:#bbb'>No PCs match your filters.</p>");
+                return;
+            }
+            pcs.forEach(pc => {
+                const card = `
+  <div class="col-12 col-sm-6 col-md-4">
+    <div class="pc-card">
+      <div class="pc-img-wrapper">
+        <img src="${pc.imageUrl}" alt="${pc.name}" class="pc-img" />
+        <div class="overlay">
+          <button class="btn btn-info">View PC</button>
+        </div>
+      </div>
+      <h3 class="pc-name">${pc.name}</h3>
+      <div class="badges mb-2">
+        <div class="sale-badge">NEW!</div>
+      </div>
+      <p class="price">$${pc.price}</p>
+    </div>
+  </div>`;
+
+                container.append(card);
+            });
+        }
+
+        function applyFilters() {
+            let filtered = [...allPCs];
+
+            const maxPrice = parseInt($("#priceRange").val()) || 5000;
+            filtered = filtered.filter(pc => pc.price <= maxPrice);
+
+            const selectedPerf = [];
+            if ($("#perf1080p").is(":checked")) selectedPerf.push("1080p");
+            if ($("#perf1440p").is(":checked")) selectedPerf.push("1440p");
+            if ($("#perf4k").is(":checked")) selectedPerf.push("4k");
+
+            if (selectedPerf.length > 0) {
+                filtered = filtered.filter(pc =>
+                    pc.badges?.some(b =>
+                        selectedPerf.some(f => b.toLowerCase().includes(f))
+                    )
+                );
+            }
+
+            const brand = $("#brandSelect").val();
+            if (brand) {
+                filtered = filtered.filter(pc =>
+                    pc.name.toLowerCase().includes(brand) ||
+                    pc.badges?.some(b => b.toLowerCase().includes(brand))
+                );
+            }
+
+            renderPCs(filtered);
+        }
+
+        $("#priceRange").on("input", function() {
+            $("#priceMax").text($(this).val());
+        });
+
+        $("#applyFilters").on("click", applyFilters);
+
+        $("#clearFilters").on("click", function() {
+            $("#priceRange").val(5000);
+            $("#priceMax").text("5000");
+            $(".form-check-input").prop("checked", false);
+            $("#brandSelect").val("");
+            renderPCs(allPCs);
+        });
+
         loadPCs();
     });
+
 </script>
 
 </body>

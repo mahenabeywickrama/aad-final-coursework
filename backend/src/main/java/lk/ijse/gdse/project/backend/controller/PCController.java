@@ -27,7 +27,7 @@ public class PCController {
     }
 
     @PostMapping("create")
-    public ResponseEntity<APIResponse> createJob(@RequestBody PCDTO pcdto) {
+    public ResponseEntity<APIResponse> createPC(@RequestBody PCDTO pcdto) {
         pcService.savePC(pcdto);
         return ResponseEntity.ok(
                 new APIResponse(
@@ -39,7 +39,7 @@ public class PCController {
     }
 
     @PutMapping("update")
-    public ResponseEntity<APIResponse> updateJob(@RequestBody PCDTO pcdto) {
+    public ResponseEntity<APIResponse> updatePC(@RequestBody PCDTO pcdto) {
         pcService.updatePC(pcdto);
         return ResponseEntity.ok(
                 new APIResponse(
@@ -51,7 +51,7 @@ public class PCController {
     }
 
     @DeleteMapping("delete/{id}")
-    public ResponseEntity<APIResponse> deleteJob(@PathVariable("id") String id) {
+    public ResponseEntity<APIResponse> deletePC(@PathVariable("id") String id) {
         pcService.deletePC(id);
         return ResponseEntity.ok(
                 new APIResponse(
@@ -63,7 +63,7 @@ public class PCController {
     }
 
     @GetMapping("getAll")
-    public ResponseEntity<APIResponse> getAllJobs() {
+    public ResponseEntity<APIResponse> getAllPCs() {
         List<PCDTO> pcdtos = pcService.getPCs();
         return ResponseEntity.ok(
                 new APIResponse(

@@ -15,13 +15,20 @@ public class PCDTO {
     private String pcCase;
     private String operatingSystem;
     private Double price;
+    private Double oldPrice;
+    private String badge;
+    private String bestFor;
     private String imageUrl;
+    private String specImageUrl;
+    private String extraImage1;
+    private String extraImage2;
+    private String extraImage3;
     private Integer totalSales;
 
     public PCDTO() {
     }
 
-    public PCDTO(Long id, String name, String series, String cpu, String cpuCooler, String ram, String gpu, String motherboard, String storage, String psu, String rgbFans, String pcCase, String operatingSystem, Double price, String imageUrl, Integer totalSales) {
+    public PCDTO(Long id, String name, String series, String cpu, String cpuCooler, String ram, String gpu, String motherboard, String storage, String psu, String rgbFans, String pcCase, String operatingSystem, Double price, Double oldPrice, String badge, String bestFor, String imageUrl, String specImageUrl, String extraImage1, String extraImage2, String extraImage3, Integer totalSales) {
         this.id = id;
         this.name = name;
         this.series = series;
@@ -36,7 +43,14 @@ public class PCDTO {
         this.pcCase = pcCase;
         this.operatingSystem = operatingSystem;
         this.price = price;
+        this.oldPrice = oldPrice;
+        this.badge = badge;
+        this.bestFor = bestFor;
         this.imageUrl = imageUrl;
+        this.specImageUrl = specImageUrl;
+        this.extraImage1 = extraImage1;
+        this.extraImage2 = extraImage2;
+        this.extraImage3 = extraImage3;
         this.totalSales = totalSales;
     }
 
@@ -166,5 +180,61 @@ public class PCDTO {
 
     public void setTotalSales(Integer totalSales) {
         this.totalSales = totalSales;
+    }
+
+    public Double getOldPrice() {
+        return oldPrice;
+    }
+
+    public void setOldPrice(Double oldPrice) {
+        this.oldPrice = oldPrice;
+    }
+
+    public String getBadge() {
+        return badge;
+    }
+
+    public void setBadge(String badge) {
+        this.badge = badge;
+    }
+
+    public String getBestFor() {
+        return bestFor;
+    }
+
+    public void setBestFor(String bestFor) {
+        this.bestFor = bestFor;
+    }
+
+    public String getSpecImageUrl() {
+        return specImageUrl;
+    }
+
+    public void setSpecImageUrl(String specImageUrl) {
+        this.specImageUrl = specImageUrl;
+    }
+
+    public String getExtraImage1() {
+        return extraImage1;
+    }
+
+    public void setExtraImage1(String extraImage1) {
+        this.extraImage1 = extraImage1;
+    }
+
+    public String getExtraImage2() {
+        return extraImage2;
+    }
+
+    public void setExtraImage2(String extraImage2) {
+        this.extraImage2 = extraImage2;
+    }
+
+    public String getExtraImage3() {
+        return extraImage3;
+    }
+
+    public void setExtraImage3(String extraImage3) {
+        this.extraImage3 = extraImage3;
     }
 }

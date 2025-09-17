@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PC Details | CoreOne</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Exo:ital,wght@0,100..900&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background: #0a0a0f;
+            color: #eaeaea;
+            font-family: 'Exo', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background: transparent;
+            transition: background 0.6s ease, box-shadow 0.6s ease;
+        }
+
+        .navbar.scrolled {
+            background: rgba(15, 15, 20, 0.95);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.6);
+        }
+
+        .navbar-brand {
+            padding: 0;
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: #00f7ff !important;
+            font-family: 'Orbitron', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar-brand span {
+            color: #fff;
+        }
+
+        .nav-link {
+            font-size: 1rem;
+            color: #bbb !important;
+            margin-right: 15px;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: #00f7ff !important;
+        }
+
+        .nav-link i {
+            font-size: 1rem;
+            color: #bbb;
+            transition: color 0.3s;
+            margin-left: 12px;
+        }
+
+        .nav-link i:hover {
+            color: #00f7ff;
+        }
+
+        .navbar-toggler {
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            background: transparent !important;
+        }
+
+        .navbar-toggler i {
+            font-size: 1.4rem;
+            color: #fff;
+            transition: color 0.3s;
+        }
+
+        .navbar-toggler i:hover {
+            color: #00f7ff;
+        }
+
+        .hero {
+            padding: 115px 0 60px;
+            text-align: center;
+            background: linear-gradient(135deg, #0a0a0f, #10141f);
+        }
+
+        .hero h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            color: #00f7ff;
+            text-shadow: 0 0 15px #00f7ff99;
+        }
+        .hero .breadcrumb a { color: #bbb; text-decoration: none; }
+        .hero .breadcrumb a:hover { color: #00f7ff; }
+
+        .pc-images img {
+            max-width: 100%;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .thumbnail-row img.active {
+            border-color: #00f7ff;
+            box-shadow: 0 0 10px #00f7ff;
+        }
+
+        .pc-images #mainImage {
+            width: 100%;
+            max-width: 1400px;
+            height: auto;
+            object-fit: cover;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .thumbnail-row {
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: nowrap;
+        }
+
+        .thumbnail-row > div {
+            padding: 0 3px !important;
+        }
+
+        .thumbnail-row img {
+            width: 100px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .pc-hero-section .pc-images-left {
+            position: relative;
+            overflow: hidden;
+            padding-left: 0;
+            margin-left: 0;
+        }
+
+        .pc-hero-section {
+            border-bottom: 1px solid #00f7ff;
+        }
+
+        .main-image-full {
+            display: block;
+            width: 100vw;
+            max-width: none;
+            height: auto;
+            object-fit: cover;
+        }
+
+        .pc-hero-section .pc-details-right {
+            padding-left: 2rem;
+            padding-right: 2rem;
+        }
+
+        .pc-hero-section .row {
+            min-height: 70vh;
+        }
+
+        .pc-details-right {
+            display: flex;
+            flex-direction: column;
+            height: 100%; /* already there */
+        }
+
+        .pc-details-content {
+            display: flex;
+            flex-direction: column;
+            flex: 1; /* <-- add this line */
+        }
+
+        .pc-bottom-bar {
+            margin-top: auto; /* pushes to bottom */
+        }
+
+        .pc-details-content {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        #pcDescription {
+            flex: 1; /* pushes bottom bar down */
+        }
+
+        .pc-bottom-bar {
+            background: #0f111b;
+            border-top: 1px solid #00f7ff;
+            padding: 15px 20px;
+            border-radius: 0 0 12px 12px;
+            margin-top: auto;
+        }
+
+        .row.gx-0 {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .col-lg-6.p-0 {
+            padding: 0;
+        }
+
+        .thumbnail-row {
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .pc-images-left .thumbnail-row img {
+            width: 100px;
+            height: auto;
+            cursor: pointer;
+        }
+
+        .pc-details-right {
+            padding: 0 !important;
+            margin: 0 !important;
+            border-left: 1px solid #00f7ff;
+        }
+
+        .pc-details-right {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            border-left: 1px solid #00f7ff;
+            padding: 0;
+        }
+
+        .pc-details-content {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .pc-bottom-bar {
+            background: #0f111b; /* subtle background */
+            border-top: 1px solid #00f7ff;
+            margin-top: auto;
+            padding: 15px 20px;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .series-bar {
+            background: linear-gradient(90deg, #00f7ff, #007a7a);
+            color: #000;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            padding: 12px 55px;
+            text-align: left;
+            box-shadow: 0 0 12px rgba(0, 247, 255, 0.4);
+            margin: 0 !important;
+            border-radius: 0;
+            width: 100%;
+            display: block;
+        }
+
+        #pcSeries {
+            font-size: 1.5rem;
+        }
+
+        .price-tag {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #00f7ff;
+            text-shadow: 0 0 12px #00f7ff88;
+        }
+        .old-price {
+            text-decoration: line-through;
+            color: #888;
+            margin-left: 10px;
+        }
+        #discountBadge {
+            font-size: 0.9rem;
+        }
+
+        .btn-glow {
+            background: #00f7ff;
+            border: none;
+            color: #000;
+            font-weight: bold;
+            padding: 12px 24px;
+            transition: all 0.3s;
+            border-radius: 8px;
+        }
+        .btn-glow:hover {
+            background: #00c2cc;
+            color: #fff;
+            box-shadow: 0 0 15px #00f7ff;
+        }
+
+        .spec-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .spec-item {
+            background: #141a2e;
+            border-radius: 10px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: transform 0.3s;
+        }
+
+        .spec-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 12px #00f7ff33;
+        }
+
+        .spec-item i {
+            color: #00f7ff;
+            font-size: 1.3rem;
+            width: 25px;
+            text-align: center;
+        }
+
+        .spec-image {
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 247, 255, 0.25);
+            transition: transform 0.3s ease;
+        }
+        .spec-image:hover {
+            transform: scale(1.02);
+        }
+
+        .footer {
+            background: linear-gradient(135deg, #0a0f1a, #141a2e);
+            color: #bbb;
+            padding: 100px 0 40px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 0.95rem;
+        }
+
+        .footer .logo {
+            color: #00f7ff;
+            font-weight: bold;
+            font-size: 2rem;
+            font-family: 'Orbitron', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .footer .logo span {
+            color: #fff;
+        }
+
+        .footer-title {
+            color: #00f7ff;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 18px;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: #bbb;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #00f7ff;
+        }
+
+        .newsletter {
+            display: flex;
+            margin-top: 10px;
+            max-width: 400px;
+            border: 1px solid rgba(0,247,255,0.3);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .newsletter input {
+            flex: 1;
+            border: none;
+            padding: 12px;
+            background: rgba(0,0,0,0.4);
+            color: #fff;
+            outline: none;
+        }
+
+        .newsletter input::placeholder {
+            color: #aaa;
+        }
+
+        .newsletter button {
+            background: #00f7ff;
+            border: none;
+            padding: 0 20px;
+            color: #000;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .newsletter button:hover {
+            background: #00c2cc;
+            color: #fff;
+        }
+
+        .social-icons a {
+            display: inline-block;
+            font-size: 1.4rem;
+            margin-right: 18px;
+            color: #bbb;
+            transition: color 0.3s, transform 0.3s;
+        }
+
+        .social-icons a:hover {
+            color: #00f7ff;
+            transform: scale(1.2);
+        }
+
+        .footer hr {
+            border-color: rgba(0,247,255,0.2);
+            margin: 40px 0;
+        }
+
+        .footer-bottom {
+            font-size: 0.85rem;
+        }
+
+        .footer-bottom p {
+            margin: 0;
+        }
+
+        .footer-policies a {
+            margin-left: 30px;
+            color: #bbb;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-policies a:hover {
+            color: #00f7ff;
+        }
+
+        @media (max-width: 768px) {
+            .footer-policies {
+                margin-top: 15px;
+                text-align: center;
+            }
+
+            .footer-policies a {
+                display: block;
+                margin: 6px 0;
+            }
+        }
+
+        @media (max-width: 991px) {
+            .navbar-collapse {
+                background: rgba(15, 15, 20, 0.95);
+                padding: 20px;
+                border-radius: 12px;
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg fixed-top navbar-dark">
+    <div class="container">
+        <!-- Logo -->
+        <a class="navbar-brand" href="index.html">Core<span>One</span></a>
+
+        <!-- Toggler for mobile -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <!-- Centered Links + Right Icons -->
+        <div class="collapse navbar-collapse justify-content-between" id="navMenu">
+            <!-- Center Navigation Links -->
+            <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Prebuilt PCs</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Custom Build</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">About</a></li>
+            </ul>
+
+            <!-- Right Side Icons -->
+            <div class="d-flex align-items-center">
+                <a href="#" class="nav-link"><i class="fas fa-search"></i></a>
+                <a href="user-dashboard.html" class="nav-link"><i class="fas fa-user"></i></a>
+                <a href="#" class="nav-link"><i class="fas fa-shopping-cart"></i></a>
+            </div>
+        </div>
+
+    </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+    <div class="container">
+        <h1 id="pcName">PC Name</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb justify-content-center">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Prebuilt PCs</a></li>
+                <li class="breadcrumb-item active" aria-current="page" id="pcNameBreadcrumb">PC Name</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<!-- Hero / Main Slider + Details Section -->
+<section class="pc-hero-section">
+    <div class="container-fluid px-0">  <!-- full-width container -->
+        <div class="row gx-0 align-items-start">
+            <!-- Slider Left: full bleed -->
+            <div class="col-lg-7 pc-images-left p-0">
+                <img id="mainImage" src="" alt="PC Image" class="w-100 main-image-full">
+                <div class="thumbnail-row d-flex justify-content-center mb-3">
+                    <img id="extraImage1" src="" alt="Extra Image 1">
+                    <img id="extraImage2" src="" alt="Extra Image 2">
+                    <img id="extraImage3" src="" alt="Extra Image 3">
+                </div>
+            </div>
+
+            <!-- Details Right -->
+            <div class="col-lg-5 pc-details-right p-0">
+                <div class="pc-details-content d-flex flex-column h-100">
+                    <div id="pcSeriesBar" class="series-bar">
+                        <span id="pcSeries"></span> Series
+                    </div>
+
+                    <div id="pcDescription" class="mt-3">
+                        <!-- Optional: description or highlights -->
+                    </div>
+
+                    <div class="pc-bottom-bar d-flex justify-content-between align-items-center mt-auto p-3">
+                        <div class="d-flex align-items-center">
+                            <span class="price-tag">$<span id="pcPrice"></span></span>
+                            <span id="pcOldPrice" class="old-price"></span>
+                            <span id="discountBadge" class="badge bg-danger ms-3"></span>
+                        </div>
+                        <button class="btn-glow"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Specs Section -->
+<div class="container py-5">
+    <div class="row align-items-center">
+
+        <!-- Specifications -->
+        <div class="col-md-6">
+            <h3 class="mb-4">Detailed Specifications</h3>
+            <div id="detailedSpecs" class="spec-grid"></div>
+        </div>
+
+        <!-- Spec Image -->
+        <div class="col-md-6 text-center mb-4 mb-md-0">
+            <img id="specImage" src="" alt="Specification Image" class="img-fluid spec-image">
+        </div>
+
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="row justify-content-between align-items-start">
+            <!-- Logo & About -->
+            <div class="col-lg-3 mb-4">
+                <h3 class="logo">Core<span>One</span></h3>
+                <p>High-performance prebuilt and custom PCs designed for gamers, creators, and enthusiasts.</p>
+            </div>
+
+            <!-- Help -->
+            <div class="col-lg-2 mb-4">
+                <h6 class="footer-title">HELP</h6>
+                <ul class="footer-links">
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Track Order</a></li>
+                    <li><a href="#">Tech Support</a></li>
+                    <li><a href="#">FAQs</a></li>
+                </ul>
+            </div>
+
+            <!-- About -->
+            <div class="col-lg-2 mb-4">
+                <h6 class="footer-title">ABOUT</h6>
+                <ul class="footer-links">
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Gallery</a></li>
+                    <li><a href="#">Reviews</a></li>
+                </ul>
+            </div>
+
+            <!-- Newsletter + Social -->
+            <div class="col-lg-4 mb-4">
+                <h6 class="footer-title">NEWSLETTER</h6>
+                <p>Sign up to stay in the loop on our stellar PCs!</p>
+                <form class="newsletter">
+                    <input type="email" placeholder="Email Address" required>
+                    <button type="submit"><i class="fas fa-arrow-right"></i></button>
+                </form>
+                <h6 class="footer-title mt-4">CONNECT WITH US</h6>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                    <a href="#"><i class="fab fa-discord"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-twitch"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <!-- Bottom Bar -->
+        <div class="footer-bottom d-flex flex-column flex-md-row justify-content-between align-items-center">
+            <p>&copy; 2025 CoreOne. All Rights Reserved.</p>
+            <div class="footer-policies">
+                <a href="#">Terms of Service</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Shipping Policy</a>
+                <a href="#">Our Warranty</a>
+                <a href="#">Refund Policy</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    $(window).on("scroll", function () {
+        $(".navbar").toggleClass("scrolled", $(this).scrollTop() > 50);
+    });
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const pcId = urlParams.get('id');
+    if(!pcId){ alert("No PC selected!"); window.location.href = "index.html"; }
+
+    const token = localStorage.getItem("accessToken");
+    fetch(`http://localhost:8080/api/v1/pc/find/${pcId}`, { headers: { "Authorization": "Bearer " + token }})
+        .then(res => res.json())
+        .then(data => {
+            const pc = data.data;
+            document.getElementById("pcName").innerText = pc.name;
+            document.getElementById("pcNameBreadcrumb").innerText = pc.name;
+            document.getElementById("pcSeries").innerText = pc.series;
+
+            document.getElementById("extraImage1").src = pc.extraImage1 || '';
+            document.getElementById("extraImage2").src = pc.extraImage2 || '';
+            document.getElementById("extraImage3").src = pc.extraImage3 || '';
+
+            const mainImage = document.getElementById("mainImage");
+            mainImage.src = pc.extraImage1 || pc.extraImage2 || pc.extraImage3 || '';
+
+            $(".thumbnail-row img").on("click", function(){
+                $("#mainImage").attr("src", $(this).attr("src"));
+                $(".thumbnail-row img").removeClass("active");
+                $(this).addClass("active");
+            });
+
+            if(pc.extraImage1){
+                $("#extraImage1").addClass("active");
+            }
+
+            document.getElementById("pcPrice").innerText = pc.price.toFixed(2);
+            if(pc.oldPrice && pc.oldPrice > pc.price){
+                document.getElementById("pcOldPrice").innerText = `$${pc.oldPrice.toFixed(2)}`;
+                const discount = Math.round(((pc.oldPrice - pc.price) / pc.oldPrice) * 100);
+                document.getElementById("discountBadge").innerText = `Save ${discount}%`;
+            }
+
+            document.getElementById("specImage").src = pc.specImageUrl || "";
+
+            const specs = [
+                { name: "CPU", value: pc.cpu, icon: "fa-microchip" },
+                { name: "CPU Cooler", value: pc.cpuCooler, icon: "fa-fan" },
+                { name: "RAM", value: pc.ram, icon: "fa-memory" },
+                { name: "GPU", value: pc.gpu, icon: "fa-desktop" },
+                { name: "Motherboard", value: pc.motherboard, icon: "fa-microchip" },
+                { name: "Storage", value: pc.storage, icon: "fa-hdd" },
+                { name: "PSU", value: pc.psu, icon: "fa-plug" },
+                { name: "Fans", value: pc.rgbFans, icon: "fa-fan" },
+                { name: "Case", value: pc.pcCase, icon: "fa-server" },
+                { name: "OS", value: pc.operatingSystem, icon: "fa-windows" }
+            ];
+            const specGrid = document.getElementById("detailedSpecs");
+            specs.forEach(s => {
+                if(s.value){
+                    const div = document.createElement("div");
+                    div.className = "spec-item";
+                    div.innerHTML = `<i class="fas ${s.icon}"></i><span>${s.name}: ${s.value}</span>`;
+                    specGrid.appendChild(div);
+                }
+            });
+
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Failed to load PC details.");
+        });
+</script>
+</body>
+</html>

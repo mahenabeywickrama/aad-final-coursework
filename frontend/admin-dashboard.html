@@ -517,13 +517,87 @@
               </div>
             </div>
 
-            <!-- Image Upload -->
+            <!-- Old Price -->
+            <div class="timeline-step">
+              <div class="timeline-icon"><i class="fas fa-tag"></i></div>
+              <div class="timeline-content form-floating">
+                <input type="number" step="0.01" min="0" class="form-control" id="pcOldPrice" placeholder="Old Price">
+                <label for="pcOldPrice">Old Price ($)</label>
+              </div>
+            </div>
+
+            <!-- Badge -->
+            <div class="timeline-step">
+              <div class="timeline-icon"><i class="fas fa-certificate"></i></div>
+              <div class="timeline-content form-floating">
+                <select class="form-control" id="pcBadge">
+                  <option value="" disabled selected>Select Badge</option>
+                  <option value="NEW">New</option>
+                  <option value="SALE">Sale</option>
+                </select>
+                <label for="pcBadge">Badge</label>
+              </div>
+            </div>
+
+            <!-- Best For -->
+            <div class="timeline-step">
+              <div class="timeline-icon"><i class="fas fa-tv"></i></div>
+              <div class="timeline-content form-floating">
+                <select class="form-control" id="pcBestFor">
+                  <option value="" disabled selected>Select Resolution</option>
+                  <option value="1080p">1080p</option>
+                  <option value="1440p">1440p</option>
+                  <option value="4K">4K</option>
+                </select>
+                <label for="pcBestFor">Best For</label>
+              </div>
+            </div>
+
+            <!-- Main Image Upload -->
             <div class="timeline-step">
               <div class="timeline-icon"><i class="fas fa-image"></i></div>
               <div class="timeline-content">
-                <label for="pcImage" class="form-label">Upload Image</label>
+                <label for="pcImage" class="form-label">Main PC Image</label>
                 <input type="file" class="form-control" id="pcImage" accept="image/*">
                 <img id="previewImage" src="" alt="Preview">
+              </div>
+            </div>
+
+            <!-- Spec Image Upload -->
+            <div class="timeline-step">
+              <div class="timeline-icon"><i class="fas fa-list"></i></div>
+              <div class="timeline-content">
+                <label for="pcSpecImage" class="form-label">Specification Image</label>
+                <input type="file" class="form-control" id="pcSpecImage" accept="image/*">
+                <img id="previewSpecImage" src="" alt="Spec Preview" style="max-width:260px;display:none;margin-top:10px;border-radius:12px;">
+              </div>
+            </div>
+
+            <!-- Extra Images -->
+            <div class="timeline-step">
+              <div class="timeline-icon"><i class="fas fa-images"></i></div>
+              <div class="timeline-content">
+                <label for="pcExtraImage1" class="form-label">Extra Image 1</label>
+                <input type="file" class="form-control" id="pcExtraImage1" accept="image/*">
+                <img id="previewExtra1" src="" alt="Extra Preview 1" style="max-width:260px;display:none;margin-top:10px;border-radius:12px;">
+              </div>
+            </div>
+
+            <div class="timeline-step">
+              <div class="timeline-icon"><i class="fas fa-images"></i></div>
+              <div class="timeline-content">
+                <label for="pcExtraImage2" class="form-label">Extra Image 2</label>
+                <input type="file" class="form-control" id="pcExtraImage2" accept="image/*">
+                <img id="previewExtra2" src="" alt="Extra Preview 2" style="max-width:260px;display:none;margin-top:10px;border-radius:12px;">
+              </div>
+            </div>
+
+            <div class="timeline-step">
+              <div class="timeline-icon"><i class="fas fa-images"></i></div>
+              <div class="timeline-content">
+                <label for="pcExtraImage3" class="form-label">Extra Image 3</label>
+                <input type="file" class="form-control" id="pcExtraImage3" accept="image/*">
+                <img id="previewExtra3" src="" alt="Extra Preview 3" style="max-width:260px;display:none;margin-top:10px;border-radius:12px;">
               </div>
             </div>
 
@@ -660,6 +734,26 @@
       }
     });
 
+    function previewFile(inputId, previewId) {
+      document.getElementById(inputId).addEventListener("change", function (event) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const preview = document.getElementById(previewId);
+            preview.src = e.target.result;
+            preview.style.display = "block";
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+
+    previewFile("pcSpecImage", "previewSpecImage");
+    previewFile("pcExtraImage1", "previewExtra1");
+    previewFile("pcExtraImage2", "previewExtra2");
+    previewFile("pcExtraImage3", "previewExtra3");
+
     $(".sidebar a").on("click", function (e) {
       if ($(this).attr("id") === "logOut") return;
 
@@ -683,10 +777,44 @@
 
       const editingId = $(this).data("editingId");
       const existingImageUrl = $(this).data("existingImageUrl");
-      const fileInput = $("#pcImage")[0];
-      const file = fileInput.files[0];
+      const existingSpecImageUrl = $(this).data("existingSpecImageUrl");
+      const existingExtra1ImageUrl = $(this).data("existingExtra1ImageUrl");
+      const existingExtra2ImageUrl = $(this).data("existingExtra2ImageUrl");
+      const existingExtra3ImageUrl = $(this).data("existingExtra3ImageUrl");
 
-      function sendPCData(imageUrl) {
+      const files = {
+        main: $("#pcImage")[0].files[0],
+        spec: $("#pcSpecImage")[0].files[0],
+        extra1: $("#pcExtraImage1")[0].files[0],
+        extra2: $("#pcExtraImage2")[0].files[0],
+        extra3: $("#pcExtraImage3")[0].files[0]
+      };
+
+      function uploadFile(file) {
+        return new Promise((resolve, reject) => {
+          if (!file) return resolve(null);
+          const formData = new FormData();
+          formData.append('file', file);
+          formData.append('upload_preset', 'prebuilt_pcs');
+          formData.append('folder', 'prebuilt_pcs');
+
+          fetch('https://api.cloudinary.com/v1_1/djsdwv2na/image/upload', {
+            method: 'POST',
+            body: formData
+          })
+                  .then(res => res.json())
+                  .then(data => resolve(data.secure_url))
+                  .catch(err => reject(err));
+        });
+      }
+
+      Promise.all([
+        uploadFile(files.main),
+        uploadFile(files.spec),
+        uploadFile(files.extra1),
+        uploadFile(files.extra2),
+        uploadFile(files.extra3)
+      ]).then(([mainUrl, specUrl, extra1Url, extra2Url, extra3Url]) => {
         const pcData = {
           id: editingId || null,
           name: $("#pcName").val(),
@@ -702,7 +830,14 @@
           pcCase: $("#pcCase").val(),
           operatingSystem: $("#pcOS").val(),
           price: parseFloat($("#pcPrice").val()),
-          imageUrl: imageUrl || existingImageUrl || null,
+          oldPrice: parseFloat($("#pcOldPrice").val()) || null,
+          badge: $("#pcBadge").val() || null,
+          bestFor: $("#pcBestFor").val() || null,
+          imageUrl: mainUrl || existingImageUrl || null,
+          specImageUrl: specUrl || existingSpecImageUrl || null,
+          extraImage1: extra1Url || existingExtra1ImageUrl || null,
+          extraImage2: extra2Url || existingExtra2ImageUrl || null,
+          extraImage3: extra3Url || existingExtra3ImageUrl || null,
           totalSales: 0
         };
 
@@ -726,35 +861,21 @@
             alert("Error: " + (xhr.responseJSON?.message || "Something went wrong"));
           }
         });
-      }
 
-      if (file) {
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('upload_preset', 'prebuilt_pcs');
-        formData.append('folder', 'prebuilt_pcs');
-
-        fetch('https://api.cloudinary.com/v1_1/djsdwv2na/image/upload', {
-          method: 'POST',
-          body: formData
-        })
-                .then(res => res.json())
-                .then(data => {
-                  sendPCData(data.secure_url);
-                })
-                .catch(err => {
-                  console.error('Image upload failed:', err);
-                  alert('Image upload failed. PC not saved.');
-                });
-      } else {
-        sendPCData(null);
-      }
+      }).catch(err => {
+        console.error("Image upload failed:", err);
+        alert("Image upload failed. PC not saved.");
+      });
     });
 
 
     function clearForm() {
       $("#addPCForm")[0].reset();
       $("#previewImage").hide().attr("src", "");
+      $("#previewSpecImage").hide().attr("src", "");
+      $("#previewExtra1").hide().attr("src", "");
+      $("#previewExtra2").hide().attr("src", "");
+      $("#previewExtra3").hide().attr("src", "");
       $("#addPCForm").removeData("editingId");
     }
 
@@ -832,6 +953,10 @@
 
       $('#addPCForm').data('editingId', pc.id);
       $('#addPCForm').data('existingImageUrl', pc.imageUrl);
+      $('#addPCForm').data('existingSpecImageUrl', pc.specImageUrl);
+      $('#addPCForm').data('existingExtra1ImageUrl', pc.extraImage1);
+      $('#addPCForm').data('existingExtra2ImageUrl', pc.extraImage2);
+      $('#addPCForm').data('existingExtra3ImageUrl', pc.extraImage3);
 
       $('#pcName').val(pc.name);
       $('#pcSeries').val(pc.series);
@@ -846,8 +971,28 @@
       $('#pcCase').val(pc.pcCase);
       $('#pcOS').val(pc.operatingSystem);
       $('#pcPrice').val(pc.price);
+      $('#pcOldPrice').val(pc.oldPrice);
+      $('#pcBadge').val(pc.badge);
+      $('#pcBestFor').val(pc.bestFor);
+
       if(pc.imageUrl){
         $('#previewImage').attr('src', pc.imageUrl).show();
+      }
+
+      if (pc.specImageUrl) {
+        $('#previewSpecImage').attr('src', pc.specImageUrl).show();
+      }
+
+      if (pc.extraImage1) {
+        $('#previewExtra1').attr('src', pc.extraImage1).show();
+      }
+
+      if (pc.extraImage2) {
+        $('#previewExtra2').attr('src', pc.extraImage2).show();
+      }
+
+      if (pc.extraImage3) {
+        $('#previewExtra3').attr('src', pc.extraImage3).show();
       }
       $(".sidebar a:contains('Add a PC')").click();
     });

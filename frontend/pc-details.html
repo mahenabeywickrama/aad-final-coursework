@@ -15,6 +15,108 @@
             font-family: 'Exo', Tahoma, Geneva, Verdana, sans-serif;
         }
 
+        .cart-panel {
+            position: fixed;
+            top: 0;
+            right: -400px; /* hidden by default */
+            width: 350px;
+            height: 100%;
+            background: #0f111b;
+            color: #eaeaea;
+            box-shadow: -4px 0 12px rgba(0, 0, 0, 0.7);
+            transition: right 0.3s ease;
+            z-index: 1050;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cart-panel.open {
+            right: 0;
+        }
+
+        .cart-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+            z-index: 1040;
+        }
+
+        .cart-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .cart-body {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            background: #141a2e;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            box-shadow: 0 0 8px rgba(0, 247, 255, 0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .cart-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 15px rgba(0, 247, 255, 0.2);
+        }
+
+        .cart-item img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 12px;
+        }
+
+        .cart-item h6 {
+            margin: 0;
+            font-size: 1rem;
+            color: #00f7ff;
+        }
+
+        .cart-item p {
+            margin: 2px 0;
+            font-size: 0.85rem;
+            color: #bbb;
+        }
+
+        .cart-qty {
+            display: flex;
+            align-items: center;
+            margin-top: 6px;
+        }
+
+        .cart-qty button {
+            background: #00f7ff;
+            border: none;
+            color: #000;
+            font-weight: bold;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            margin: 0 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .cart-qty button:hover {
+            background: #00c2cc;
+            color: #fff;
+        }
+
         .navbar {
             background: transparent;
             transition: background 0.6s ease, box-shadow 0.6s ease;
@@ -270,11 +372,13 @@
             color: #00f7ff;
             text-shadow: 0 0 12px #00f7ff88;
         }
+
         .old-price {
             text-decoration: line-through;
             color: #888;
             margin-left: 10px;
         }
+
         #discountBadge {
             font-size: 0.9rem;
         }
@@ -288,6 +392,7 @@
             transition: all 0.3s;
             border-radius: 8px;
         }
+
         .btn-glow:hover {
             background: #00c2cc;
             color: #fff;
@@ -328,6 +433,7 @@
             box-shadow: 0 0 20px rgba(0, 247, 255, 0.25);
             transition: transform 0.3s ease;
         }
+
         .spec-image:hover {
             transform: scale(1.02);
         }
@@ -475,6 +581,24 @@
     </style>
 </head>
 <body>
+
+<!-- Sliding Cart Panel -->
+<div id="cartPanel" class="cart-panel">
+    <div class="cart-header d-flex justify-content-between align-items-center p-3">
+        <h5>Your Cart</h5>
+        <button id="closeCart" class="btn btn-sm btn-light">&times;</button>
+    </div>
+    <div class="cart-body p-3" id="cartContainer">
+        <!-- Cart items will be dynamically injected here -->
+    </div>
+    <div class="cart-footer p-3 border-top">
+        <h6>Total: $<span id="cartTotal">0.00</span></h6>
+        <button class="btn btn-glow w-100 mt-2">Checkout</button>
+    </div>
+</div>
+
+<!-- Overlay -->
+<div id="cartOverlay" class="cart-overlay"></div>
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
@@ -659,6 +783,94 @@
         $(".navbar").toggleClass("scrolled", $(this).scrollTop() > 50);
     });
 
+    const cartPanel = document.getElementById("cartPanel");
+    const cartOverlay = document.getElementById("cartOverlay");
+    const closeCartBtn = document.getElementById("closeCart");
+    const cartContainerEl = document.getElementById("cartContainer");
+    const cartTotalEl = document.getElementById("cartTotal");
+
+    // Open cart when clicking the cart icon
+    const cartIcon = document.querySelector("a.nav-link .fa-shopping-cart").closest("a"); // navbar icon
+    cartIcon.addEventListener("click", (e) => {
+        e.preventDefault();
+        renderCart();
+        cartPanel.classList.add("open");
+        cartOverlay.classList.add("show");
+    });
+
+    // Close cart
+    closeCartBtn.addEventListener("click", () => {
+        cartPanel.classList.remove("open");
+        cartOverlay.classList.remove("show");
+    });
+    cartOverlay.addEventListener("click", () => {
+        cartPanel.classList.remove("open");
+        cartOverlay.classList.remove("show");
+    });
+
+    // Render cart items
+    function renderCart() {
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        let total = 0;
+
+        if (cart.length === 0) {
+            cartContainerEl.innerHTML = `
+            <div class="text-center mt-5">
+                <i class="fas fa-shopping-bag fa-3x text-muted mb-3"></i>
+                <p>Your cart is empty</p>
+            </div>
+        `;
+            cartTotalEl.innerText = "0.00";
+            return;
+        }
+
+        cartContainerEl.innerHTML = cart.map(item => {
+            total += item.price * item.quantity;
+            return `
+        <div class="cart-item">
+            <img src="${item.image}" alt="${item.name}">
+            <div>
+                <h6>${item.name}</h6>
+                <p>
+                  $${item.price.toFixed(2)}
+                  ${item.oldPrice && item.oldPrice > item.price ? `<span class="old-price">$${item.oldPrice.toFixed(2)}</span>` : ''}
+                </p>
+                <div class="cart-qty">
+                    <button onclick="changeQty('${item.id}', -1)">-</button>
+                    <span>${item.quantity}</span>
+                    <button onclick="changeQty('${item.id}', 1)">+</button>
+                </div>
+            </div>
+            <button class="btn btn-sm btn-danger ms-auto" onclick="removeFromCart('${item.id}')">&times;</button>
+        </div>
+        `;
+        }).join('');
+
+        cartTotalEl.innerText = total.toFixed(2);
+    }
+
+    function changeQty(id, delta) {
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        cart = cart.map(item => {
+            if (item.id === id) {
+                item.quantity = Math.max(1, item.quantity + delta); // prevent going below 1
+            }
+            return item;
+        });
+        localStorage.setItem("cart", JSON.stringify(cart));
+        renderCart();
+        updateCartBadge();
+    }
+
+    // Remove item
+    function removeFromCart(id) {
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        cart = cart.filter(item => item.id !== id);
+        localStorage.setItem("cart", JSON.stringify(cart));
+        renderCart();
+        updateCartBadge();
+    }
+
     function updateCartBadge() {
         const cart = JSON.parse(localStorage.getItem("cart")) || [];
         const totalQty = cart.reduce((acc, item) => acc + item.quantity, 0);
@@ -693,10 +905,12 @@
 
             mainImgUrl = pc.imageUrl || '';
 
-            $(".thumbnail-row img").on("click", function(){
-                $("#mainImage").attr("src", $(this).attr("src"));
-                $(".thumbnail-row img").removeClass("active");
-                $(this).addClass("active");
+            document.querySelectorAll(".thumbnail-row img").forEach(img => {
+                img.addEventListener("click", () => {
+                    document.getElementById("mainImage").src = img.src;
+                    document.querySelectorAll(".thumbnail-row img").forEach(t => t.classList.remove("active"));
+                    img.classList.add("active");
+                });
             });
 
             if(pc.extraImage1){
@@ -772,10 +986,12 @@
                 id: pcId,
                 name: document.getElementById("pcName").innerText,
                 price: parseFloat(document.getElementById("pcPrice").innerText),
+                oldPrice: parseFloat(document.getElementById("pcOldPrice").innerText.replace('$','')) || 0,
                 image: mainImgUrl
             };
+
             addToCart(pc);
-            // renderCart();
+            renderCart();
         });
     });
 

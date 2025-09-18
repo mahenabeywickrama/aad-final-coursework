@@ -163,17 +163,17 @@
         .pc-details-right {
             display: flex;
             flex-direction: column;
-            height: 100%; /* already there */
+            height: 100%;
         }
 
         .pc-details-content {
             display: flex;
             flex-direction: column;
-            flex: 1; /* <-- add this line */
+            flex: 1;
         }
 
         .pc-bottom-bar {
-            margin-top: auto; /* pushes to bottom */
+            margin-top: auto;
         }
 
         .pc-details-content {
@@ -183,7 +183,7 @@
         }
 
         #pcDescription {
-            flex: 1; /* pushes bottom bar down */
+            flex: 1;
         }
 
         .pc-bottom-bar {
@@ -236,7 +236,7 @@
         }
 
         .pc-bottom-bar {
-            background: #0f111b; /* subtle background */
+            background: #0f111b;
             border-top: 1px solid #00f7ff;
             margin-top: auto;
             padding: 15px 20px;
@@ -492,7 +492,7 @@
             <!-- Center Navigation Links -->
             <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
                 <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Prebuilt PCs</a></li>
+                <li class="nav-item"><a class="nav-link" href="prebuilt-pcs.html">Prebuilt PCs</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">Custom Build</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">About</a></li>
             </ul>
@@ -501,7 +501,12 @@
             <div class="d-flex align-items-center">
                 <a href="#" class="nav-link"><i class="fas fa-search"></i></a>
                 <a href="user-dashboard.html" class="nav-link"><i class="fas fa-user"></i></a>
-                <a href="#" class="nav-link"><i class="fas fa-shopping-cart"></i></a>
+                <a href="#" class="nav-link position-relative">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cartBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        0
+                    </span>
+                </a>
             </div>
         </div>
 
@@ -654,9 +659,21 @@
         $(".navbar").toggleClass("scrolled", $(this).scrollTop() > 50);
     });
 
+    function updateCartBadge() {
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const totalQty = cart.reduce((acc, item) => acc + item.quantity, 0);
+        document.getElementById("cartBadge").innerText = totalQty;
+    }
+
+    $(document).ready(function () {
+        updateCartBadge();
+    })
+
     const urlParams = new URLSearchParams(window.location.search);
     const pcId = urlParams.get('id');
     if(!pcId){ alert("No PC selected!"); window.location.href = "index.html"; }
+
+    let mainImgUrl = null;
 
     const token = localStorage.getItem("accessToken");
     fetch(`http://localhost:8080/api/v1/pc/find/${pcId}`, { headers: { "Authorization": "Bearer " + token }})
@@ -673,6 +690,8 @@
 
             const mainImage = document.getElementById("mainImage");
             mainImage.src = pc.extraImage1 || pc.extraImage2 || pc.extraImage3 || '';
+
+            mainImgUrl = pc.imageUrl || '';
 
             $(".thumbnail-row img").on("click", function(){
                 $("#mainImage").attr("src", $(this).attr("src"));
@@ -720,6 +739,47 @@
             console.error(err);
             alert("Failed to load PC details.");
         });
+
+    function addToCart(pc) {
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+        // Check if PC is already in cart
+        const existingItem = cart.find(item => item.id === pc.id);
+        if (existingItem) {
+            existingItem.quantity += 1; // increment quantity
+        } else {
+            cart.push({
+                id: pc.id,
+                name: pc.name,
+                price: pc.price,
+                oldPrice: pc.oldPrice,
+                image: pc.image || "",
+                quantity: 1
+            });
+        }
+
+        localStorage.setItem("cart", JSON.stringify(cart));
+        alert(pc.name + " added to cart!");
+        updateCartBadge();
+    }
+
+    if(!pcId){ alert("No PC selected!"); window.location.href = "index.html"; }
+
+    // 2. Attach event after pcId exists
+    document.querySelectorAll(".btn-glow").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const pc = {
+                id: pcId,
+                name: document.getElementById("pcName").innerText,
+                price: parseFloat(document.getElementById("pcPrice").innerText),
+                image: mainImgUrl
+            };
+            addToCart(pc);
+            // renderCart();
+        });
+    });
+
+
 </script>
 </body>
 </html>

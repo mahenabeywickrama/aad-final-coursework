@@ -383,7 +383,7 @@
             font-size: 0.9rem;
         }
 
-        .btn-glow {
+        .btn-glow, .checkout {
             background: #00f7ff;
             border: none;
             color: #000;
@@ -393,49 +393,86 @@
             border-radius: 8px;
         }
 
-        .btn-glow:hover {
+        .btn-glow:hover, .checkout:hover {
             background: #00c2cc;
             color: #fff;
             box-shadow: 0 0 15px #00f7ff;
         }
 
-        .spec-grid {
+        .specs-section {
+            background: #070908;
+            color: #fff;
+        }
+
+        .specs-section .col-lg-6:first-child {
+            padding-left: 130px; /* adjust spacing as needed */
+            padding-right: 15px;
+        }
+
+        .spec-main-image {
+            max-width: 80%;
+            border-radius: 12px;
+        }
+
+        .specs-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: #fff;
+            position: relative;
+        }
+
+        .specs-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: #00f7ff;
+            margin-top: 8px;
+        }
+
+        .specs-list {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px 30px;
         }
 
         .spec-item {
-            background: #141a2e;
-            border-radius: 10px;
-            padding: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .spec-number {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #6c63ff;
+            color: #ffffff;
+            font-weight: bold;
             display: flex;
             align-items: center;
-            gap: 12px;
-            transition: transform 0.3s;
+            justify-content: center;
+            flex-shrink: 0;
+            /*margin-top: 4px;*/
         }
 
-        .spec-item:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 0 12px #00f7ff33;
+        .spec-details {
+            display: flex;
+            flex-direction: column;
         }
 
-        .spec-item i {
+        .spec-category {
+            font-weight: 600;
             color: #00f7ff;
-            font-size: 1.3rem;
-            width: 25px;
-            text-align: center;
+            font-size: 1.1rem;
         }
 
-        .spec-image {
-            max-width: 100%;
-            border-radius: 12px;
-            box-shadow: 0 0 20px rgba(0, 247, 255, 0.25);
-            transition: transform 0.3s ease;
-        }
-
-        .spec-image:hover {
-            transform: scale(1.02);
+        .spec-value {
+            color: #bbb;
+            font-size: 1rem;
+            margin-top: 2px;
         }
 
         .footer {
@@ -593,7 +630,7 @@
     </div>
     <div class="cart-footer p-3 border-top">
         <h6>Total: $<span id="cartTotal">0.00</span></h6>
-        <button class="btn btn-glow w-100 mt-2">Checkout</button>
+        <button class="btn w-100 mt-2 checkout">Checkout</button>
     </div>
 </div>
 
@@ -678,7 +715,7 @@
 
                     <div class="pc-bottom-bar d-flex justify-content-between align-items-center mt-auto p-3">
                         <div class="d-flex align-items-center">
-                            <span class="price-tag">$<span id="pcPrice"></span></span>
+                            <span class="price-tag">Rs.<span id="pcPrice"></span></span>
                             <span id="pcOldPrice" class="old-price"></span>
                             <span id="discountBadge" class="badge bg-danger ms-3"></span>
                         </div>
@@ -691,22 +728,26 @@
 </section>
 
 <!-- Specs Section -->
-<div class="container py-5">
-    <div class="row align-items-center">
+<section class="specs-section py-5">
+    <div class="container-fluid">
+        <div class="row align-items-center">
 
-        <!-- Specifications -->
-        <div class="col-md-6">
-            <h3 class="mb-4">Detailed Specifications</h3>
-            <div id="detailedSpecs" class="spec-grid"></div>
+            <!-- Specs Left (now on the left instead of right) -->
+            <div class="col-lg-6">
+                <h3 class="specs-title">Tech Specs</h3>
+                <div class="specs-list row" id="detailedSpecs">
+                    <!-- Dynamic specs injected here -->
+                </div>
+            </div>
+
+            <!-- Spec Image Right (moved here) -->
+            <div class="col-lg-6 text-center mb-4 mb-lg-0">
+                <img id="specImage" src="" alt="Specification Image" class="img-fluid spec-main-image">
+            </div>
+
         </div>
-
-        <!-- Spec Image -->
-        <div class="col-md-6 text-center mb-4 mb-md-0">
-            <img id="specImage" src="" alt="Specification Image" class="img-fluid spec-image">
-        </div>
-
     </div>
-</div>
+</section>
 
 <!-- Footer -->
 <footer class="footer">
@@ -832,8 +873,8 @@
             <div>
                 <h6>${item.name}</h6>
                 <p>
-                  $${item.price.toFixed(2)}
-                  ${item.oldPrice && item.oldPrice > item.price ? `<span class="old-price">$${item.oldPrice.toFixed(2)}</span>` : ''}
+                  Rs.${item.price.toFixed(2)}
+                  ${item.oldPrice && item.oldPrice > item.price ? `<span class="old-price">Rs.${item.oldPrice.toFixed(2)}</span>` : ''}
                 </p>
                 <div class="cart-qty">
                     <button onclick="changeQty('${item.id}', -1)">-</button>
@@ -879,80 +920,106 @@
 
     $(document).ready(function () {
         updateCartBadge();
-    })
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const pcId = urlParams.get('id');
-    if(!pcId){ alert("No PC selected!"); window.location.href = "index.html"; }
+        const urlParams = new URLSearchParams(window.location.search);
+        const pcId = urlParams.get('id');
+        if(!pcId){
+            alert("No PC selected!");
+            window.location.href = "prebuilt-pcs.html";
+            return;
+        }
 
-    let mainImgUrl = null;
+        let mainImgUrl = null;
 
-    const token = localStorage.getItem("accessToken");
-    fetch(`http://localhost:8080/api/v1/pc/find/${pcId}`, { headers: { "Authorization": "Bearer " + token }})
-        .then(res => res.json())
-        .then(data => {
-            const pc = data.data;
-            document.getElementById("pcName").innerText = pc.name;
-            document.getElementById("pcNameBreadcrumb").innerText = pc.name;
-            document.getElementById("pcSeries").innerText = pc.series;
+        const token = localStorage.getItem("accessToken");
+        fetch(`http://localhost:8080/api/v1/pc/find/${pcId}`, { headers: { "Authorization": "Bearer " + token }})
+            .then(res => res.json())
+            .then(data => {
+                const pc = data.data;
+                document.getElementById("pcName").innerText = pc.name;
+                document.getElementById("pcNameBreadcrumb").innerText = pc.name;
+                document.getElementById("pcSeries").innerText = pc.series;
 
-            document.getElementById("extraImage1").src = pc.extraImage1 || '';
-            document.getElementById("extraImage2").src = pc.extraImage2 || '';
-            document.getElementById("extraImage3").src = pc.extraImage3 || '';
+                document.getElementById("extraImage1").src = pc.extraImage1 || '';
+                document.getElementById("extraImage2").src = pc.extraImage2 || '';
+                document.getElementById("extraImage3").src = pc.extraImage3 || '';
 
-            const mainImage = document.getElementById("mainImage");
-            mainImage.src = pc.extraImage1 || pc.extraImage2 || pc.extraImage3 || '';
+                const mainImage = document.getElementById("mainImage");
+                mainImage.src = pc.extraImage1 || pc.extraImage2 || pc.extraImage3 || '';
 
-            mainImgUrl = pc.imageUrl || '';
+                mainImgUrl = pc.imageUrl || '';
 
-            document.querySelectorAll(".thumbnail-row img").forEach(img => {
-                img.addEventListener("click", () => {
-                    document.getElementById("mainImage").src = img.src;
-                    document.querySelectorAll(".thumbnail-row img").forEach(t => t.classList.remove("active"));
-                    img.classList.add("active");
+                document.querySelectorAll(".thumbnail-row img").forEach(img => {
+                    img.addEventListener("click", () => {
+                        document.getElementById("mainImage").src = img.src;
+                        document.querySelectorAll(".thumbnail-row img").forEach(t => t.classList.remove("active"));
+                        img.classList.add("active");
+                    });
                 });
-            });
 
-            if(pc.extraImage1){
-                $("#extraImage1").addClass("active");
-            }
-
-            document.getElementById("pcPrice").innerText = pc.price.toFixed(2);
-            if(pc.oldPrice && pc.oldPrice > pc.price){
-                document.getElementById("pcOldPrice").innerText = `$${pc.oldPrice.toFixed(2)}`;
-                const discount = Math.round(((pc.oldPrice - pc.price) / pc.oldPrice) * 100);
-                document.getElementById("discountBadge").innerText = `Save ${discount}%`;
-            }
-
-            document.getElementById("specImage").src = pc.specImageUrl || "";
-
-            const specs = [
-                { name: "CPU", value: pc.cpu, icon: "fa-microchip" },
-                { name: "CPU Cooler", value: pc.cpuCooler, icon: "fa-fan" },
-                { name: "RAM", value: pc.ram, icon: "fa-memory" },
-                { name: "GPU", value: pc.gpu, icon: "fa-desktop" },
-                { name: "Motherboard", value: pc.motherboard, icon: "fa-microchip" },
-                { name: "Storage", value: pc.storage, icon: "fa-hdd" },
-                { name: "PSU", value: pc.psu, icon: "fa-plug" },
-                { name: "Fans", value: pc.rgbFans, icon: "fa-fan" },
-                { name: "Case", value: pc.pcCase, icon: "fa-server" },
-                { name: "OS", value: pc.operatingSystem, icon: "fa-windows" }
-            ];
-            const specGrid = document.getElementById("detailedSpecs");
-            specs.forEach(s => {
-                if(s.value){
-                    const div = document.createElement("div");
-                    div.className = "spec-item";
-                    div.innerHTML = `<i class="fas ${s.icon}"></i><span>${s.name}: ${s.value}</span>`;
-                    specGrid.appendChild(div);
+                if(pc.extraImage1){
+                    $("#extraImage1").addClass("active");
                 }
+
+                document.getElementById("pcPrice").innerText = pc.price.toFixed(2);
+                if(pc.oldPrice && pc.oldPrice > pc.price){
+                    document.getElementById("pcOldPrice").innerText = `Rs.${pc.oldPrice.toFixed(2)}`;
+                    const discount = Math.round(((pc.oldPrice - pc.price) / pc.oldPrice) * 100);
+                    document.getElementById("discountBadge").innerText = `Save ${discount}%`;
+                }
+
+                document.getElementById("specImage").src = pc.specImageUrl || "";
+
+                const specs = [
+                    { name: "CPU", value: pc.cpu, icon: "fa-microchip" },
+                    { name: "CPU Cooler", value: pc.cpuCooler, icon: "fa-fan" },
+                    { name: "RAM", value: pc.ram, icon: "fa-memory" },
+                    { name: "GPU", value: pc.gpu, icon: "fa-desktop" },
+                    { name: "Motherboard", value: pc.motherboard, icon: "fa-microchip" },
+                    { name: "Storage", value: pc.storage, icon: "fa-hdd" },
+                    { name: "OS", value: pc.operatingSystem, icon: "fa-windows" },
+                    { name: "PSU", value: pc.psu, icon: "fa-plug" },
+                    { name: "Fans", value: pc.rgbFans, icon: "fa-fan" },
+                    { name: "Case", value: pc.pcCase, icon: "fa-server" }
+                ];
+                const specGrid = document.getElementById("detailedSpecs");
+                specs.forEach((s, index) => {
+                    if (s.value) {
+                        const div = document.createElement("div");
+                        div.className = "spec-item";
+                        div.innerHTML = `
+            <span class="spec-number">${index + 1}</span>
+            <div class="spec-details">
+                <span class="spec-category">${s.name}</span>
+                <span class="spec-value">${s.value}</span>
+            </div>
+        `;
+                        specGrid.appendChild(div);
+                    }
+                });
+
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Failed to load PC details.");
             });
 
-        })
-        .catch(err => {
-            console.error(err);
-            alert("Failed to load PC details.");
+        document.querySelectorAll(".btn-glow").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const pc = {
+                    id: pcId,
+                    name: document.getElementById("pcName").innerText,
+                    price: parseFloat(document.getElementById("pcPrice").innerText),
+                    oldPrice: parseFloat(document.getElementById("pcOldPrice").innerText.replace('Rs.','')) || 0,
+                    image: mainImgUrl
+                };
+
+                addToCart(pc);
+                renderCart();
+            });
         });
+
+    })
 
     function addToCart(pc) {
         let cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -977,24 +1044,9 @@
         updateCartBadge();
     }
 
-    if(!pcId){ alert("No PC selected!"); window.location.href = "index.html"; }
-
-    // 2. Attach event after pcId exists
-    document.querySelectorAll(".btn-glow").forEach(btn => {
-        btn.addEventListener("click", () => {
-            const pc = {
-                id: pcId,
-                name: document.getElementById("pcName").innerText,
-                price: parseFloat(document.getElementById("pcPrice").innerText),
-                oldPrice: parseFloat(document.getElementById("pcOldPrice").innerText.replace('$','')) || 0,
-                image: mainImgUrl
-            };
-
-            addToCart(pc);
-            renderCart();
-        });
+    document.getElementsByClassName('checkout')[0].addEventListener("click", () => {
+        window.location.href = "checkout.html";
     });
-
 
 </script>
 </body>

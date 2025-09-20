@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | CoreOne</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Exo:ital,wght@0,100..900&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background: #0a0a0f;
+            color: #eaeaea;
+            font-family: 'Exo', sans-serif;
+        }
+
+        .checkout-left, .checkout-right {
+            background: #141a2e;
+            color: #fff;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        h4 {
+            color: #00f7ff;
+            margin-bottom: 1.6rem;
+            text-decoration: underline;
+        }
+
+        .form-control {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+        }
+
+        .form-control:focus {
+            border-color: #00f7ff;
+            box-shadow: 0 0 5px #00f7ff;
+            background: #ffffff;
+        }
+
+        .btn-dark {
+            padding: 1rem;
+            font-size: 1.2rem;
+            background: #00f7ff;
+            border: none;
+            color: #000;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn-dark:hover {
+            background: #00c2cc;
+            color: #fff;
+        }
+
+        .cart-item h6 {
+            color: #00f7ff;
+        }
+
+        .text-muted {
+            color: rgba(200, 200, 200, 0.7) !important;
+        }
+
+        .checkout-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .checkout-left, .checkout-right {
+            flex: 1;
+            min-width: 300px;
+            background: #141a2e;
+            color: #fff;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 1rem;
+        }
+
+        .cart-item img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-right: 1rem;
+        }
+
+        .cart-summary {
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+
+        .logo {
+            background: transparent;
+            text-align: center;
+            margin: 2rem 0;
+            padding: 0;
+            font-weight: bold;
+            font-size: 2rem;
+            color: #00f7ff !important;
+            font-family: 'Orbitron', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .logo a, .logo a:visited {
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: #fff;
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- Logo -->
+<div class="logo">
+    <a href="index.html">Core<span>One</span></a>
+</div>
+
+<!-- Checkout Container -->
+<div class="container checkout-container">
+
+    <!-- Left Side: Forms -->
+    <div class="checkout-left">
+        <h4>User Information</h4>
+        <form>
+            <div class="mb-3">
+                <label class="form-label">Full Name</label>
+                <input type="text" class="form-control" placeholder="John Doe" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Address</label>
+                <textarea class="form-control" rows="2" placeholder="123 Main Street" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">City</label>
+                <input type="text" class="form-control" placeholder="Colombo" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Phone</label>
+                <input type="text" class="form-control" placeholder="+94 77 123 4567" required>
+            </div>
+
+            <button id="place-order-btn" class="btn btn-dark w-100 mt-3">Place Order</button>
+
+        </form>
+    </div>
+
+    <!-- Right Side: Cart -->
+    <div class="checkout-right">
+        <h4>Your Cart</h4>
+        <div id="cart-items"></div>
+        <div class="cart-summary" id="cart-summary"></div>
+        <img src="images/warranty_returns_badges.jpg">
+    </div>
+
+</div>
+
+<script type="text/javascript" src="https://www.payhere.lk/lib/payhere.js"></script>
+<script>
+    function loadCart() {
+        const cart = JSON.parse(localStorage.getItem("cart"));
+        if (cart.length === 0) {
+            alert("You have no items in your cart.");
+            window.location.href = "prebuilt-pcs.html";
+            return;
+        }
+        const cartContainer = document.getElementById("cart-items");
+        const summaryContainer = document.getElementById("cart-summary");
+        cartContainer.innerHTML = "";
+        let total = 0;
+
+        cart.forEach(item => {
+            total += item.price * item.quantity;
+
+            const div = document.createElement("div");
+            div.className = "cart-item";
+            div.innerHTML = `
+          <img src="${item.image}" alt="${item.name}">
+          <div>
+            <h6>${item.name}</h6>
+            <p>
+              <span class="text-muted text-decoration-line-through">Rs.${item.oldPrice.toFixed(2)}</span>
+              <span class="fw-bold">Rs.${item.price.toFixed(2)}</span>
+              <br>
+              Qty: ${item.quantity}
+            </p>
+          </div>
+        `;
+            cartContainer.appendChild(div);
+        });
+
+        summaryContainer.textContent = "Total: Rs." + total.toFixed(2);
+    }
+
+    document.addEventListener("DOMContentLoaded", loadCart);
+
+    window.onload = function () {
+        payhere.onCompleted = function onCompleted(orderId) {
+            alert("Payment completed. OrderID: " + orderId);
+            // TODO: Notify backend that payment succeeded
+        };
+
+        payhere.onDismissed = function onDismissed() {
+            alert("Payment dismissed by customer");
+        };
+
+        payhere.onError = function onError(error) {
+            alert("Error: " + error);
+        };
+
+        document.getElementById("place-order-btn").addEventListener("click", function(e) {
+            e.preventDefault();
+
+            const cart = JSON.parse(localStorage.getItem("cart")) || [];
+            if (cart.length === 0) {
+                alert("Your cart is empty!");
+                return;
+            }
+
+            let total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+            const token = localStorage.getItem("accessToken");
+            if (token) {
+                const decoded = parseJwt(token);
+                const username = decoded.sub;
+
+                fetch("http://localhost:8080/api/v1/orders/create", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + token
+                    },
+                    body: JSON.stringify({
+                        items: cart,
+                        username: username
+                    })
+                })
+                    .then(res => {
+                        if (!res.ok) throw new Error("HTTP error " + res.status);
+                        return res.json();
+                    })
+                    .then(data => {
+                        payhere.startPayment(data.paymentFormFields);
+                    });
+            }
+
+        });
+
+        function parseJwt(token) {
+            try {
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(
+                    atob(base64)
+                        .split('')
+                        .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+                        .join('')
+                );
+                return JSON.parse(jsonPayload);
+            } catch (e) {
+                console.error("Invalid token", e);
+                return null;
+            }
+        }
+    }
+
+</script>
+
+</body>
+</html>

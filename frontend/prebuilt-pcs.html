@@ -457,7 +457,7 @@
 
                 <!-- Price Range -->
                 <div class="mb-4">
-                    <label class="form-label">Price Range ($)</label>
+                    <label class="form-label">Price Range (Rs)</label>
                     <input type="range" class="form-range" min="500" max="5000" step="100" id="priceRange">
                     <div class="d-flex justify-content-between">
                         <small id="priceMin">500</small>
@@ -642,9 +642,9 @@
         </div>` : ""}
 
       <div class="price">
-        <span class="current-price">$${pc.price.toFixed(2)}</span>
+        <span class="current-price">Rs.${pc.price.toFixed(2)}</span>
         ${pc.oldPrice && pc.oldPrice > pc.price ?
-                    `<span class="old-price">$${pc.oldPrice.toFixed(2)}</span>` : ""}
+                    `<span class="old-price">Rs.${pc.oldPrice.toFixed(2)}</span>` : ""}
       </div>
     </div>
   </div>`;

@@ -9,4 +9,5 @@ import java.util.List;
 public interface OrderService {
     Orders createOrder(User user, List<CartItemDTO> cartItems);
     Orders findById(long id);
+    List<Orders> getOrdersByUser(User user);
 }

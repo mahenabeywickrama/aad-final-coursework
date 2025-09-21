@@ -254,8 +254,19 @@
                         return res.json();
                     })
                     .then(data => {
-                        payhere.startPayment(data.paymentFormFields);
-                    });
+                        // console.log('paymentFormFields from backend:', data.paymentFormFields);
+                        // // verify hash, merchant_id, amount, order_id present
+                        // if (!data.paymentFormFields.hash) {
+                        //     console.error('Missing hash in payment fields!');
+                        //     return;
+                        // }
+                        // payhere.startPayment(data.paymentFormFields);
+
+                        alert("Order Placed Successfully.");
+                        localStorage.removeItem("cart")
+                        window.location.href = "prebuilt-pcs.html";
+                    })
+                    .catch(err => console.error(err));
             }
 
         });

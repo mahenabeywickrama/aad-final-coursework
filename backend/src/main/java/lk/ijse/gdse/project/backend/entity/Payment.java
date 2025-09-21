@@ -13,9 +13,11 @@ public class Payment {
 
     @OneToOne
     private Orders order;
-
     private String paymentMethod;
+
+    @Enumerated(EnumType.STRING)
     private PaymentStatus status; // PENDING, SUCCESS, FAILED
+
     private String transactionId;
     private BigDecimal amount;
     private LocalDateTime paidAt;

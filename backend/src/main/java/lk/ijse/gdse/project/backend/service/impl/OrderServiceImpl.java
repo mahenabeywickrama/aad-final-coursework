@@ -5,6 +5,7 @@ import lk.ijse.gdse.project.backend.entity.*;
 import lk.ijse.gdse.project.backend.repository.OrdersPCRepository;
 import lk.ijse.gdse.project.backend.repository.OrdersRepository;
 import lk.ijse.gdse.project.backend.repository.PCRepository;
+import lk.ijse.gdse.project.backend.repository.PaymentRepository;
 import lk.ijse.gdse.project.backend.service.OrderService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,13 +22,16 @@ public class OrderServiceImpl implements OrderService {
     private final OrdersRepository ordersRepository;
     private final OrdersPCRepository ordersPCRepository;
     private final PCRepository pcRepository;
+    private final PaymentRepository paymentRepository;
 
     public OrderServiceImpl(OrdersRepository ordersRepository,
                             OrdersPCRepository ordersPCRepository,
-                            PCRepository pcRepository) {
+                            PCRepository pcRepository,
+                            PaymentRepository paymentRepository) {
         this.ordersRepository = ordersRepository;
         this.ordersPCRepository = ordersPCRepository;
         this.pcRepository = pcRepository;
+        this.paymentRepository = paymentRepository;
     }
 
     @Override
@@ -70,6 +74,15 @@ public class OrderServiceImpl implements OrderService {
             ordersPCRepository.save(op);
         }
 
+        Payment payment = new Payment();
+        payment.setOrder(saved);
+        payment.setPaymentMethod("SIMULATED"); // "CASH", "TEST"
+        payment.setAmount(total);
+        payment.setStatus(PaymentStatus.SUCCESS);
+        payment.setPaidAt(LocalDateTime.now());
+        paymentRepository.save(payment);
+
+        ordersRepository.updatePaymentStatus(saved.getId());
         return saved;
     }
 
@@ -77,5 +90,10 @@ public class OrderServiceImpl implements OrderService {
     public Orders findById(long id) {
         return ordersRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Order not found: " + id));
+    }
+
+    @Override
+    public List<Orders> getOrdersByUser(User user) {
+        return ordersRepository.findByUser(user);
     }
 }

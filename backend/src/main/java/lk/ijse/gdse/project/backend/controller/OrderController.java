@@ -3,6 +3,7 @@ package lk.ijse.gdse.project.backend.controller;
 import lk.ijse.gdse.project.backend.dto.APIResponse;
 import lk.ijse.gdse.project.backend.dto.OrderRequestDTO;
 import lk.ijse.gdse.project.backend.dto.OrderResponseDTO;
+import lk.ijse.gdse.project.backend.dto.OrderUserDTO;
 import lk.ijse.gdse.project.backend.entity.Orders;
 import lk.ijse.gdse.project.backend.entity.User;
 import lk.ijse.gdse.project.backend.service.OrderService;
@@ -10,10 +11,9 @@ import lk.ijse.gdse.project.backend.service.PaymentService;
 import lk.ijse.gdse.project.backend.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/orders")
@@ -38,13 +38,33 @@ public class OrderController {
         }
 
         Orders saved = orderService.createOrder(user, request.getItems());
-        var paymentFields = paymentService.createPaymentSession(saved.getId());
+        // TO BE DEVELOPED
+//        var paymentFields = paymentService.createPaymentSession(saved.getId());
 
         OrderResponseDTO resp = new OrderResponseDTO();
         resp.setOrderId(saved.getId());
-        resp.setPaymentFormFields(paymentFields);
+//        resp.setPaymentFormFields(paymentFields);
 
         return ResponseEntity.ok(resp);
     }
+
+    @GetMapping("/user")
+    public ResponseEntity<List<OrderUserDTO>> getOrdersByUser(@RequestParam String username) {
+        User user = userService.getEntityByUsername(username);
+        if (user == null) return ResponseEntity.status(404).body(null);
+
+        List<Orders> orders = orderService.getOrdersByUser(user);
+        List<OrderUserDTO> response = orders.stream().map(order -> {
+            OrderUserDTO dto = new OrderUserDTO();
+            dto.setOrderId(order.getId());
+            dto.setStatus(order.getStatus().toString());
+            dto.setTotal(order.getTotalAmount());
+            dto.setCreatedAt(order.getOrderDate());
+            return dto;
+        }).toList();
+
+        return ResponseEntity.ok(response);
+    }
+
 }
 

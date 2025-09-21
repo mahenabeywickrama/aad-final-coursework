@@ -46,7 +46,7 @@ Here are some screenshots showcasing the main features:
 ### Backend
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/coreone.git
+   git clone https://github.com/mahenabeywickrama/aad-final-coursework.git
 2. Navigate to the backend folder:
    ```bash
     cd coreone/backend
@@ -80,4 +80,3 @@ Watch the project demo video here: [Youtube Link](https://www.youtube.com/watch?
 ## 5. Technologies Used
 - **Frontend:** HTML, CSS, Bootstrap, JavaScript, jQuery
 - **Backend:** Java, Spring Boot, Hibernate, MySQL
-- **Other:** OBS Studio (for demo video recording)

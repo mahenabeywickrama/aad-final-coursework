@@ -18,26 +18,26 @@ CoreOne is a web-based application that allows users to browse prebuilt gaming P
 Here are some screenshots showcasing the main features:
 
 **Home Page**  
-![Home Page](https://raw.githubusercontent.com/mahenabeywickrama/aad-final-coursework/main/frontend/screenshots/1.png)
+![Home Page](https://raw.githubusercontent.com/mahenabeywickrama/aad-final-coursework/refs/heads/main/frontend/screenshots/1.PNG)
 
 **Prebuilt PCs Section**  
-![Home Page](https://raw.githubusercontent.com/mahenabeywickrama/aad-final-coursework/main/frontend/screenshots/2.png)
-![Home Page](https://raw.githubusercontent.com/mahenabeywickrama/aad-final-coursework/main/frontend/screenshots/3.png)
+![Home Page](https://raw.githubusercontent.com/mahenabeywickrama/aad-final-coursework/refs/heads/main/frontend/screenshots/2.PNG)
+![Home Page](https://raw.githubusercontent.com/mahenabeywickrama/aad-final-coursework/refs/heads/main/frontend/screenshots/3.PNG)
 
 **PC Details Page**  
-![Home Page](https://raw.githubusercontent.com/mahenabeywickrama/aad-final-coursework/main/frontend/screenshots/4.png)
+![Home Page](https://raw.githubusercontent.com/mahenabeywickrama/aad-final-coursework/refs/heads/main/frontend/screenshots/4.PNG)
 
 **Shopping Cart Overlay**  
-![Home Page](https://raw.githubusercontent.com/mahenabeywickrama/aad-final-coursework/main/frontend/screenshots/5.png)
+![Home Page](https://raw.githubusercontent.com/mahenabeywickrama/aad-final-coursework/refs/heads/main/frontend/screenshots/5.PNG)
 
 **Checkout Page**  
-![Home Page](https://raw.githubusercontent.com/mahenabeywickrama/aad-final-coursework/main/frontend/screenshots/6.png)
+![Home Page](https://raw.githubusercontent.com/mahenabeywickrama/aad-final-coursework/refs/heads/main/frontend/screenshots/6.PNG)
 
 **User Dashboard**  
-![Home Page](https://raw.githubusercontent.com/mahenabeywickrama/aad-final-coursework/main/frontend/screenshots/7.png)
+![Home Page](https://raw.githubusercontent.com/mahenabeywickrama/aad-final-coursework/refs/heads/main/frontend/screenshots/7.PNG)
 
 **Admin Dashboard**  
-![Home Page](https://raw.githubusercontent.com/mahenabeywickrama/aad-final-coursework/main/frontend/screenshots/8.png)
+![Home Page](https://raw.githubusercontent.com/mahenabeywickrama/aad-final-coursework/refs/heads/main/frontend/screenshots/8.PNG)
 
 ---
 

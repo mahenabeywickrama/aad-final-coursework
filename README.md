@@ -18,26 +18,26 @@ CoreOne is a web-based application that allows users to browse prebuilt gaming P
 Here are some screenshots showcasing the main features:
 
 **Home Page**  
-![Home Page](frontend/screenshots/1.png)
+![Home Page](https://raw.githubusercontent.com/mahenabeywickrama/aad-final-coursework/main/frontend/screenshots/1.png)
 
 **Prebuilt PCs Section**  
-![Prebuilt PCs](frontend/screenshots/2.png)
-![Prebuilt PCs](frontend/screenshots/3.png)
+![Home Page](https://raw.githubusercontent.com/mahenabeywickrama/aad-final-coursework/main/frontend/screenshots/2.png)
+![Home Page](https://raw.githubusercontent.com/mahenabeywickrama/aad-final-coursework/main/frontend/screenshots/3.png)
 
 **PC Details Page**  
-![PC Details](frontend/screenshots/4.png)
+![Home Page](https://raw.githubusercontent.com/mahenabeywickrama/aad-final-coursework/main/frontend/screenshots/4.png)
 
 **Shopping Cart Overlay**  
-![Shopping Cart](frontend/screenshots/5.png)
+![Home Page](https://raw.githubusercontent.com/mahenabeywickrama/aad-final-coursework/main/frontend/screenshots/5.png)
 
 **Checkout Page**  
-![Checkout Page](frontend/screenshots/6.png)
+![Home Page](https://raw.githubusercontent.com/mahenabeywickrama/aad-final-coursework/main/frontend/screenshots/6.png)
 
 **User Dashboard**  
-![User Dashboard](frontend/screenshots/7.png)
+![Home Page](https://raw.githubusercontent.com/mahenabeywickrama/aad-final-coursework/main/frontend/screenshots/7.png)
 
 **Admin Dashboard**  
-![Admin Dashboard](frontend/screenshots/8.png)
+![Home Page](https://raw.githubusercontent.com/mahenabeywickrama/aad-final-coursework/main/frontend/screenshots/8.png)
 
 ---
 

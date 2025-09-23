@@ -75,7 +75,7 @@ Here are some screenshots showcasing the main features:
 
 ## 4. Demo Video
 
-Watch the project demo video here: [Youtube Link](https://www.youtube.com/watch?v=-MXsUC7MPLM)
+Watch the project demo video here: [YouTube Link](https://www.youtube.com/watch?v=-MXsUC7MPLM)
 
 ## 5. Technologies Used
 - **Frontend:** HTML, CSS, Bootstrap, JavaScript, jQuery

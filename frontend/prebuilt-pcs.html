@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Exo:ital,wght@0,100..900&display=swap" rel="stylesheet">
 
     <link href="styles/cart.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.css">
 
     <style>
         body {
@@ -263,6 +264,54 @@
             font-size: 0.9rem;
         }
 
+        #priceSlider {
+            margin: 25px 10px;
+            height: 8px;
+        }
+
+        .noUi-target {
+            background: rgba(255, 255, 255, 0.15);
+            /*border-radius: 5px;*/
+            border: none;
+            /*box-shadow: inset 0 1px 4px rgba(0,0,0,0.25);*/
+        }
+
+        .noUi-connect {
+            background: linear-gradient(90deg, #00f2fe, #4facfe);
+            /*border-radius: 5px;*/
+            transition: background 0.3s ease;
+        }
+
+        .noUi-handle {
+            width: 14px;
+            height: 14px;
+            /*border-radius: 50%;*/
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid #4facfe;
+            backdrop-filter: blur(6px);
+            cursor: pointer;
+            box-shadow: 0 0 6px rgba(79, 172, 254, 0.7);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .noUi-handle:hover {
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.9);
+        }
+
+        .noUi-handle:active {
+            box-shadow: 0 0 14px rgba(0, 242, 254, 1);
+        }
+
+        .noUi-tooltip {
+            background: #111;
+            color: #00f2fe;
+            font-size: 11px;
+            font-weight: bold;
+            border-radius: 3px;
+            padding: 2px 6px;
+            box-shadow: 0 0 5px rgba(0, 242, 254, 0.7);
+        }
+
         .footer {
             background: linear-gradient(135deg, #0a0f1a, #141a2e);
             color: #bbb;
@@ -484,10 +533,10 @@
                 <!-- Price Range -->
                 <div class="mb-4">
                     <label class="form-label">Price Range (Rs)</label>
-                    <input type="range" class="form-range" min="500" max="5000" step="100" id="priceRange">
-                    <div class="d-flex justify-content-between">
-                        <small id="priceMin">500</small>
-                        <small id="priceMax">5000</small>
+                    <div id="priceSlider"></div>
+                    <div class="d-flex justify-content-between mt-2">
+                        <small id="priceMin">0</small>
+                        <small id="priceMax">100000</small>
                     </div>
                 </div>
 
@@ -596,6 +645,7 @@
 </footer>
 
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js"></script>
 <script src="scripts/cart.js"></script>
 
 <script>
@@ -621,6 +671,41 @@
 
     $(document).ready(function() {
         let allPCs = [];
+        let maxPrice = 100000;
+
+        let priceSlider;
+
+        function initPriceSlider(maxPcPrice) {
+            priceSlider = document.getElementById('priceSlider');
+
+            noUiSlider.create(priceSlider, {
+                start: [0, maxPcPrice],
+                connect: true,
+                range: {
+                    'min': 0,
+                    'max': maxPcPrice
+                },
+                step: 1
+            });
+
+            priceSlider.noUiSlider.on('update', function (values) {
+                const minVal = Math.round(values[0]);
+                const maxVal = Math.round(values[1]);
+
+                $("#priceMin").text(formatPrice(minVal));
+                $("#priceMax").text(formatPrice(maxVal));
+
+                applyFilters();
+            });
+        }
+
+        function getPriceRange() {
+            if (priceSlider) {
+                const values = priceSlider.noUiSlider.get();
+                return [Math.round(values[0]), Math.round(values[1])];
+            }
+            return [0, 100000];
+        }
 
         function loadPCs() {
             $.ajax({
@@ -628,13 +713,61 @@
                 method: "GET",
                 success: function(data) {
                     allPCs = data;
+
+                    // Find max price from PCs dynamically
+                    const maxPcPrice = Math.max(...allPCs.map(pc => pc.price));
+                    maxPrice = maxPcPrice;
+
+                    initPriceSlider(maxPcPrice);
+
+                    $("#minPriceRange").attr("max", maxPcPrice);
+                    $("#maxPriceRange").attr("max", maxPcPrice).val(maxPcPrice);
+                    $("#priceMax").text(maxPcPrice);
+
                     renderPCs(allPCs);
                 },
                 error: function(err) {
                     console.error("Failed to load PCs", err);
                     $("#pcsContainer").html("<p style='color:red;text-align:center'>Failed to load PCs</p>");
+                    initPriceSlider(100000); // fallback default
                 }
             });
+        }
+
+        function formatPrice(val) {
+            return "Rs." + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        function applyFilters() {
+            let filtered = [...allPCs];
+
+            const [minVal, maxVal] = getPriceRange();
+
+            filtered = filtered.filter(pc => pc.price >= minVal && pc.price <= maxVal);
+
+            // Performance filter
+            const selectedPerf = [];
+            if ($("#perf1080p").is(":checked")) selectedPerf.push("1080p");
+            if ($("#perf1440p").is(":checked")) selectedPerf.push("1440p");
+            if ($("#perf4k").is(":checked")) selectedPerf.push("4k");
+
+            if (selectedPerf.length > 0) {
+                filtered = filtered.filter(pc =>
+                        pc.bestFor && selectedPerf.some(f =>
+                            pc.bestFor.toLowerCase().includes(f.toLowerCase())
+                        )
+                );
+            }
+
+            // Series filter
+            const series = $("#seriesSelect").val();
+            if (series) {
+                filtered = filtered.filter(pc =>
+                    pc.series && pc.series.toUpperCase() === series.toUpperCase()
+                );
+            }
+
+            renderPCs(filtered);
         }
 
         function renderPCs(pcs) {
@@ -684,35 +817,6 @@
         $("#perf1080p, #perf1440p, #perf4k").on("change", applyFilters);
 
         $("#seriesSelect").on("change", applyFilters);
-
-        function applyFilters() {
-            let filtered = [...allPCs];
-
-            const maxPrice = parseInt($("#priceRange").val()) || 5000;
-            filtered = filtered.filter(pc => pc.price <= maxPrice);
-
-            const selectedPerf = [];
-            if ($("#perf1080p").is(":checked")) selectedPerf.push("1080p");
-            if ($("#perf1440p").is(":checked")) selectedPerf.push("1440p");
-            if ($("#perf4k").is(":checked")) selectedPerf.push("4k");
-
-            if (selectedPerf.length > 0) {
-                filtered = filtered.filter(pc =>
-                        pc.bestFor && selectedPerf.some(f =>
-                            pc.bestFor.toLowerCase().includes(f.toLowerCase())
-                        )
-                );
-            }
-
-            const series = $("#seriesSelect").val();
-            if (series) {
-                filtered = filtered.filter(pc =>
-                    pc.series && pc.series.toUpperCase() === series.toUpperCase()
-                );
-            }
-
-            renderPCs(filtered);
-        }
 
         $("#clearFilters").on("click", function() {
             $("#priceRange").val(5000);

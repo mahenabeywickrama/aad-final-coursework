@@ -70,6 +70,11 @@ public class OrderServiceImpl implements OrderService {
         Orders saved = ordersRepository.save(order);
 
         for (OrdersPC op : orderItems) {
+            PC pc = op.getPc();
+            Integer totalSales = pc.getTotalSales();
+            totalSales = totalSales + op.getQuantity();
+            pc.setTotalSales(totalSales);
+
             op.setOrder(saved);
             ordersPCRepository.save(op);
         }

@@ -10,6 +10,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.http.*;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class PerformanceServiceImpl implements PerformanceService {
@@ -20,14 +21,94 @@ public class PerformanceServiceImpl implements PerformanceService {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final RestTemplate restTemplate = new RestTemplate();
 
+    // Enhanced caching
+    private final Map<String, Map<String, Map<String, Integer>>> cache = new ConcurrentHashMap<>();
+    private final Map<String, Long> cacheTimestamps = new ConcurrentHashMap<>();
+    private static final long CACHE_DURATION = 7 * 24 * 60 * 60 * 1000L; // 7 days
+
     @Override
     public Map<String, Integer> getGameFPS(String cpu, String gpu, String ram, String storage) {
-        // This method returns 1080p data for backward compatibility
         Map<String, Map<String, Integer>> allResolutions = getGameFPSAllResolutions(cpu, gpu, ram, storage);
         return allResolutions.getOrDefault("1080p", getFallbackFPSForResolution("1080p"));
     }
 
     public Map<String, Map<String, Integer>> getGameFPSAllResolutions(String cpu, String gpu, String ram, String storage) {
+        String cacheKey = generateCacheKey(cpu, gpu, ram, storage);
+
+        // Check cache first
+        if (cache.containsKey(cacheKey)) {
+            Long timestamp = cacheTimestamps.get(cacheKey);
+            if (timestamp != null && (System.currentTimeMillis() - timestamp) < CACHE_DURATION) {
+                System.out.println("Using cached FPS data for: " + cacheKey);
+                return cache.get(cacheKey);
+            } else {
+                // Remove expired cache
+                cache.remove(cacheKey);
+                cacheTimestamps.remove(cacheKey);
+            }
+        }
+
+        // Try API call
+        Map<String, Map<String, Integer>> result = callGeminiAPI(cpu, gpu, ram, storage);
+
+        // Cache the result
+        cache.put(cacheKey, result);
+        cacheTimestamps.put(cacheKey, System.currentTimeMillis());
+
+        return result;
+    }
+
+    private String generateCacheKey(String cpu, String gpu, String ram, String storage) {
+        // Create a normalized key to improve cache hit rate
+        String normalizedCpu = normalizeCpuName(cpu);
+        String normalizedGpu = normalizeGpuName(gpu);
+        String normalizedRam = normalizeRamSize(ram);
+
+        return String.format("%s|%s|%s|%s", normalizedCpu, normalizedGpu, normalizedRam, storage)
+                .toLowerCase().replaceAll("\\s+", " ");
+    }
+
+    private String normalizeCpuName(String cpu) {
+        if (cpu == null) return "unknown";
+        // Group similar CPUs together for better caching
+        cpu = cpu.toLowerCase();
+        if (cpu.contains("i5-12") || cpu.contains("i5 12")) return "intel-i5-12th";
+        if (cpu.contains("i7-12") || cpu.contains("i7 12")) return "intel-i7-12th";
+        if (cpu.contains("i5-13") || cpu.contains("i5 13")) return "intel-i5-13th";
+        if (cpu.contains("i7-13") || cpu.contains("i7 13")) return "intel-i7-13th";
+        if (cpu.contains("ryzen 5 7")) return "amd-ryzen5-7000";
+        if (cpu.contains("ryzen 7 7")) return "amd-ryzen7-7000";
+        return cpu.replaceAll("[^a-z0-9]", "");
+    }
+
+    private String normalizeGpuName(String gpu) {
+        if (gpu == null) return "unknown";
+        // Group similar GPUs together
+        gpu = gpu.toLowerCase();
+        if (gpu.contains("rtx 4060")) return "rtx-4060";
+        if (gpu.contains("rtx 4070")) return "rtx-4070";
+        if (gpu.contains("rtx 4080")) return "rtx-4080";
+        if (gpu.contains("rtx 4090")) return "rtx-4090";
+        if (gpu.contains("rtx 3060")) return "rtx-3060";
+        if (gpu.contains("rtx 3070")) return "rtx-3070";
+        if (gpu.contains("rtx 3080")) return "rtx-3080";
+        if (gpu.contains("rx 7600")) return "rx-7600";
+        if (gpu.contains("rx 7700")) return "rx-7700";
+        if (gpu.contains("rx 7800")) return "rx-7800";
+        return gpu.replaceAll("[^a-z0-9]", "");
+    }
+
+    private String normalizeRamSize(String ram) {
+        if (ram == null) return "unknown";
+        // Extract RAM size
+        if (ram.toLowerCase().contains("16")) return "16gb";
+        if (ram.toLowerCase().contains("32")) return "32gb";
+        if (ram.toLowerCase().contains("8")) return "8gb";
+        if (ram.toLowerCase().contains("64")) return "64gb";
+        return ram.toLowerCase();
+    }
+
+    private Map<String, Map<String, Integer>> callGeminiAPI(String cpu, String gpu, String ram, String storage) {
         if (geminiApiKey == null || geminiApiKey.trim().isEmpty()) {
             System.err.println("Gemini API key is not configured");
             return getFallbackFPSAllResolutions();
@@ -61,6 +142,11 @@ public class PerformanceServiceImpl implements PerformanceService {
 
         } catch (HttpClientErrorException e) {
             System.err.println("Gemini HTTP Error: " + e.getStatusCode() + " - " + e.getResponseBodyAsString());
+
+            if (e.getStatusCode() == HttpStatus.TOO_MANY_REQUESTS) {
+                System.err.println("Quota exceeded! Using fallback data. Consider upgrading your Gemini plan.");
+            }
+
             return getFallbackFPSAllResolutions();
         } catch (Exception e) {
             System.err.println("Error calling Gemini API: " + e.getMessage());
@@ -140,8 +226,18 @@ public class PerformanceServiceImpl implements PerformanceService {
             // Clean up response
             text = cleanJsonResponse(text);
 
-            Map<String, Map<String, Integer>> allResolutionsFPS = objectMapper.readValue(text, new TypeReference<>() {});
-            return validateAndReturnMultiResFPS(allResolutionsFPS);
+            // Use LinkedHashMap to preserve order
+            ObjectMapper orderedMapper = new ObjectMapper();
+            Map<String, LinkedHashMap<String, Integer>> allResolutionsFPS =
+                    orderedMapper.readValue(text, new TypeReference<Map<String, LinkedHashMap<String, Integer>>>() {});
+
+            // Convert to regular Map<String, Map<String, Integer>> while preserving order
+            Map<String, Map<String, Integer>> result = new LinkedHashMap<>();
+            for (Map.Entry<String, LinkedHashMap<String, Integer>> entry : allResolutionsFPS.entrySet()) {
+                result.put(entry.getKey(), new LinkedHashMap<>(entry.getValue()));
+            }
+
+            return validateAndReturnMultiResFPS(result);
 
         } catch (Exception e) {
             System.err.println("Error parsing Gemini multi-resolution response: " + e.getMessage());
@@ -174,15 +270,15 @@ public class PerformanceServiceImpl implements PerformanceService {
     }
 
     private Map<String, Map<String, Integer>> validateAndReturnMultiResFPS(Map<String, Map<String, Integer>> allResolutionsFPS) {
-        Map<String, Map<String, Integer>> result = new HashMap<>();
+        Map<String, Map<String, Integer>> result = new LinkedHashMap<>();
 
         List<String> resolutions = Arrays.asList("1080p", "1440p", "4K");
 
         for (String resolution : resolutions) {
             Map<String, Integer> resFPS = allResolutionsFPS.get(resolution);
             if (resFPS != null && resFPS.size() >= 3) {
-                // Filter out invalid FPS values
-                Map<String, Integer> validFps = new HashMap<>();
+                // Filter out invalid FPS values while preserving order
+                Map<String, Integer> validFps = new LinkedHashMap<>();
                 for (Map.Entry<String, Integer> entry : resFPS.entrySet()) {
                     int fpsValue = entry.getValue();
                     if (fpsValue > 0 && fpsValue <= 300) {
@@ -191,8 +287,8 @@ public class PerformanceServiceImpl implements PerformanceService {
                 }
 
                 if (validFps.size() >= 3) {
-                    // Keep only first 3 entries
-                    Map<String, Integer> limitedFps = new HashMap<>();
+                    // Keep only first 3 entries while preserving order
+                    Map<String, Integer> limitedFps = new LinkedHashMap<>();
                     int count = 0;
                     for (Map.Entry<String, Integer> entry : validFps.entrySet()) {
                         if (count < 3) {
@@ -251,8 +347,8 @@ public class PerformanceServiceImpl implements PerformanceService {
         List<Map<String, Integer>> fallbackOptions = Arrays.asList(
                 Map.of("Apex Legends", 120, "Fortnite", 110, "Valorant", 150),
                 Map.of("Cyberpunk 2077", 60, "The Witcher 3", 85, "GTA V", 90),
-                Map.of("CS 2", 140, "COD MW3", 100, "Elden Ring", 70),
-                Map.of("MC RTX", 75, "Spider-Man RE", 80, "God of War", 75)
+                Map.of("Counter-Strike 2", 140, "Call of Duty MW3", 100, "Elden Ring", 70),
+                Map.of("Minecraft RTX", 75, "Spider-Man Remastered", 80, "God of War", 75)
         );
 
         Random random = new Random();
@@ -260,17 +356,17 @@ public class PerformanceServiceImpl implements PerformanceService {
 
         Map<String, Map<String, Integer>> result = new LinkedHashMap<>();
 
-        // 1080p (base values)
+        // 1080p (base values) - preserve order
         result.put("1080p", new LinkedHashMap<>(selectedBaseFPS));
 
-        // 1440p (70% of 1080p)
+        // 1440p (70% of 1080p) - preserve same order
         Map<String, Integer> fps1440p = new LinkedHashMap<>();
         for (Map.Entry<String, Integer> entry : selectedBaseFPS.entrySet()) {
             fps1440p.put(entry.getKey(), (int) Math.round(entry.getValue() * 0.7));
         }
         result.put("1440p", fps1440p);
 
-        // 4K (45% of 1080p)
+        // 4K (45% of 1080p) - preserve same order
         Map<String, Integer> fps4k = new LinkedHashMap<>();
         for (Map.Entry<String, Integer> entry : selectedBaseFPS.entrySet()) {
             fps4k.put(entry.getKey(), (int) Math.round(entry.getValue() * 0.45));

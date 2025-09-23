@@ -318,12 +318,25 @@
       width: 100% !important;
     }
 
+    #usersTable {
+      width: 100% !important;
+    }
+
     .dataTables_wrapper {
       width: 100% !important;
     }
 
     .card .table-responsive {
       margin: 0 -10px;
+    }
+
+    #dashboardSection h1,
+    #addPCSection h1,
+    #manageUsersSection h1 {
+      font-size: 1.8rem; !important;
+      font-weight: 600; !important;
+      margin-bottom: 20px; !important;
+      color: #eaeaea; !important;
     }
 
   </style>
@@ -333,10 +346,9 @@
 <!-- Sidebar -->
 <div class="sidebar">
   <a href="index.html" class="brand"><h2>Core<span>One</span></h2></a>
-  <a href="#" class="active"><i class="fas fa-home"></i> Dashboard</a>
-  <a href="#"><i class="fas fa-desktop"></i> Add a PC</a>
-  <a href="#"><i class="fas fa-users"></i> Manage Users</a>
-  <a href="#"><i class="fas fa-box"></i> Manage Products</a>
+  <a href="#" class="active" id="dashboardLink" data-target="dashboardSection"><i class="fas fa-home"></i> Dashboard</a>
+  <a href="#" id="pcsLink" data-target="addPCSection"><i class="fas fa-desktop"></i> Add a PC</a>
+  <a href="#" id="usersLink" data-target="manageUsersSection"><i class="fas fa-users"></i> View Users</a>
   <a href="#"><i class="fas fa-shopping-cart"></i> Orders</a>
   <a href="#"><i class="fas fa-chart-line"></i> Reports</a>
   <a href="#"><i class="fas fa-cogs"></i> Settings</a>
@@ -346,7 +358,9 @@
 <!-- Main Content -->
 <div class="main-content">
   <div id="dashboardSection">
-    <h1 id="welcomeMessage">Welcome, Admin</h1>
+    <h1 class="mb-4 text-start">
+      <i class="fas fa-home me-2"></i> Welcome, Admin
+    </h1>
     <div class="row">
       <div class="col-md-4">
         <div class="card">
@@ -669,6 +683,31 @@
       </div>
     </div>
   </div>
+
+  <!-- Manage Users Section (hidden by default) -->
+  <div id="manageUsersSection" style="display:none;">
+    <h1 class="mb-4 text-start">
+      <i class="fas fa-users me-2"></i> Manage Users
+    </h1>
+
+    <div class="card">
+      <div class="table-responsive">
+        <table id="usersTable" class="table table-striped table-hover">
+          <thead>
+          <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 
@@ -760,16 +799,12 @@
       $(".sidebar a").removeClass("active");
       $(this).addClass("active");
 
-      if ($(this).find("i").hasClass("fa-desktop")) {
-        $("#dashboardSection").hide();
-        $("#addPCSection").show();
-      } else if ($(this).find("i").hasClass("fa-home")) {
-        $("#addPCSection").hide();
-        $("#dashboardSection").show();
-      } else {
-        $("#addPCSection").hide();
-        $("#dashboardSection").show();
-      }
+      // Hide all sections first
+      $("#dashboardSection, #manageUsersSection, #addPCSection").hide();
+
+      // Show the target section
+      let target = $(this).data("target");
+      $("#" + target).show();
     });
 
     $("#addPCForm").on("submit", function(e) {
@@ -937,16 +972,72 @@
       ]
     });
 
-    let searchTimeout;
+    const usersTable = $('#usersTable').DataTable({
+      processing: false,
+      serverSide: true,
+      searching: true,
+      ajax: function(data, callback) {
+        const page = Math.floor(data.start / data.length);
+        const size = data.length;
+        const searchValue = data.search.value;
 
-    $('#pcsTable_filter input').off().on('keyup', function () {
-              clearTimeout(searchTimeout);
-              const query = $(this).val();
-
-              searchTimeout = setTimeout(function () {
-                table.search(query).draw();
-              }, 300);
+        $.ajax({
+          url: `http://localhost:8080/api/v1/admin/user/getFromPage?page=${page}&size=${size}&search=${encodeURIComponent(searchValue)}`,
+          type: "GET",
+          headers: {
+            "Authorization": "Bearer " + localStorage.getItem("accessToken")
+          },
+          success: function(response) {
+            callback({
+              draw: data.draw,
+              recordsTotal: response.data.totalItems,
+              recordsFiltered: response.data.totalItems,
+              data: response.data.data // make sure your API returns { data: [...], totalItems: N }
             });
+          },
+          error: function(xhr) {
+            console.error(xhr);
+            alert("Failed to load users: " + (xhr.responseJSON?.message || xhr.statusText));
+          }
+        });
+      },
+      columns: [
+        { data: 'id' },
+        { data: 'username' },
+        { data: 'email' },
+        { data: 'role' },
+        { data: 'status' },
+        {
+          data: null,
+          render: function(data, type, row) {
+            return `
+                    <button class="btn btn-sm btn-outline-primary edit-user-btn" data-id="${row.id}">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger delete-user-btn" data-id="${row.id}">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                `;
+          }
+        }
+      ],
+      lengthMenu: [5, 10, 25, 50],
+      pageLength: 10
+    });
+
+    function addDebouncedSearch(tableSelector, dataTable, delay = 300) {
+      let timeout;
+      $(`${tableSelector}_filter input`).off().on('keyup', function () {
+        clearTimeout(timeout);
+        const query = $(this).val();
+        timeout = setTimeout(() => {
+          dataTable.search(query).draw();
+        }, delay);
+      });
+    }
+
+    addDebouncedSearch('#pcsTable', table);
+    addDebouncedSearch('#usersTable', usersTable);
 
     $('#pcsTable').on('click', '.edit-btn', function () {
       const pc = table.row($(this).closest('tr')).data();

@@ -6,23 +6,26 @@
     <title>Home | CoreOne</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-
-    <!--Fonts-->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Exo:ital,wght@0,100..900&display=swap" rel="stylesheet">
 
     <link href="styles/cart.css" rel="stylesheet">
-
     <style>
+        :root {
+            --primary-cyan: #00f7ff;
+            --primary-dark: #0a0a0f;
+            --secondary-dark: #141a2e;
+            --accent-blue: #007a7a;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            background: #0a0a0f;
+            background: var(--primary-dark);
             color: #eaeaea;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Exo', sans-serif;
+            overflow-x: hidden;
         }
 
         .navbar {
@@ -87,44 +90,392 @@
             color: #00f7ff;
         }
 
+        /* Hero Section */
         .hero {
-            background: radial-gradient(circle at top, rgba(0, 247, 255, 0.2), rgba(10, 10, 15, 1));
             height: 100vh;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, #0d1421 50%, var(--secondary-dark) 100%);
+            position: relative;
             display: flex;
             align-items: center;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                    radial-gradient(circle at 20% 50%, rgba(0, 247, 255, 0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(0, 247, 255, 0.05) 0%, transparent 50%),
+                    radial-gradient(circle at 40% 80%, rgba(0, 247, 255, 0.08) 0%, transparent 50%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #fff 0%, var(--primary-cyan) 50%, #fff 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 50px rgba(0, 247, 255, 0.3);
+            line-height: 1.1;
+            margin-bottom: 2rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.4rem;
+            color: #bbb;
+            margin-bottom: 3rem;
+            font-weight: 300;
+        }
+
+        .btn-hero {
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.4s ease;
+            margin: 0 10px;
+            display: inline-block;
+        }
+
+        .btn-primary-glow {
+            background: linear-gradient(135deg, var(--primary-cyan), var(--accent-blue));
+            color: #000;
+            box-shadow: 0 10px 30px rgba(0, 247, 255, 0.3);
+        }
+
+        .btn-primary-glow:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(0, 247, 255, 0.5);
+            color: #000;
+        }
+
+        .btn-outline-glow {
+            background: transparent;
+            color: var(--primary-cyan);
+            border: 2px solid var(--primary-cyan);
+        }
+
+        .btn-outline-glow:hover {
+            background: var(--primary-cyan);
+            color: #000;
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 247, 255, 0.3);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 120px 0;
+            background: linear-gradient(180deg, var(--primary-dark) 0%, var(--secondary-dark) 100%);
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
             text-align: center;
-            color: white;
+            margin-bottom: 4rem;
+            color: var(--primary-cyan);
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #0f111b 0%, #1a1d29 100%);
+            border: 1px solid rgba(0, 247, 255, 0.1);
+            border-radius: 20px;
+            padding: 3rem;
+            height: 100%;
+            transition: all 0.4s ease;
             position: relative;
             overflow: hidden;
         }
 
-        .hero h1 {
-            font-size: 3.8rem;
-            font-weight: bold;
-            text-shadow: 0px 0px 20px rgba(0,247,255,0.7);
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0, 247, 255, 0.05) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
         }
 
-        .hero p {
-            font-size: 1.3rem;
-            color: #ccc;
-            margin-top: 15px;
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(0, 247, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 247, 255, 0.1);
         }
 
-        .btn-glow {
-            background: #00f7ff;
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary-cyan);
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #fff;
+            position: relative;
+            z-index: 2;
+        }
+
+        .feature-description {
+            color: #bbb;
+            line-height: 1.6;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Product Showcase */
+        .showcase {
+            padding: 120px 0;
+            background: var(--primary-dark);
+        }
+
+        .showcase-card {
+            background: linear-gradient(135deg, var(--secondary-dark) 0%, #1a1d29 100%);
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s ease;
+            height: 100%;
+        }
+
+        .showcase-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 30px 60px rgba(0, 247, 255, 0.1);
+        }
+
+        .showcase-image {
+            height: 250px;
+            background: linear-gradient(135deg, #1a1d29 0%, #0f111b 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .showcase-image::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, var(--primary-cyan), var(--accent-blue));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .showcase-image::after {
+            content: '\f108';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
             color: #000;
+        }
+
+        .showcase-content {
+            padding: 2rem;
+        }
+
+        .showcase-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-cyan);
+            margin-bottom: 1rem;
+        }
+
+        .showcase-description {
+            color: #bbb;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .showcase-price {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-showcase {
+            background: linear-gradient(135deg, var(--primary-cyan), var(--accent-blue));
+            color: #000;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
             font-weight: 600;
-            padding: 12px 35px;
-            border-radius: 50px;
-            margin: 10px;
-            box-shadow: 0px 0px 15px #00f7ff;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-showcase:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 247, 255, 0.3);
+            color: #000;
+        }
+
+        /* Stats Section */
+        .stats {
+            padding: 100px 0;
+            background: linear-gradient(135deg, var(--secondary-dark) 0%, var(--primary-dark) 100%);
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .stat-number, .open-hours {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--primary-cyan);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1.2rem;
+            color: #bbb;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            padding: 100px 0;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary-dark) 100%);
+        }
+
+        .faq-section .accordion-item {
+            background: #0f111b;
+            border: 1px solid rgba(0,247,255,0.2);
+            border-radius: 12px;
+            overflow: hidden;
             transition: all 0.3s ease;
         }
 
-        .btn-glow:hover {
-            background: #00c2cc;
+        .faq-section .accordion-button {
+            background: transparent;
             color: #fff;
-            box-shadow: 0px 0px 25px #00f7ff, 0px 0px 40px #00f7ff;
+            font-weight: 600;
+            font-size: 1.2rem;
+            padding: 1.6rem 1.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .faq-section .accordion-button::after {
+            filter: invert(100%) brightness(150%);
+            transition: transform 0.3s ease;
+        }
+
+        .faq-section .accordion-button:hover {
+            color: var(--primary-cyan);
+            text-shadow: 0 0 10px var(--primary-cyan), 0 0 20px var(--primary-cyan);
+        }
+
+        .faq-section .accordion-button:not(.collapsed) {
+            color: var(--primary-cyan);
+            text-shadow: 0 0 10px var(--primary-cyan), 0 0 20px var(--primary-cyan);
+            background: rgba(0,247,255,0.05);
+        }
+
+        .faq-section .accordion-body {
+            color: #bbb;
+            font-size: 1rem;
+            line-height: 1.6;
+            padding: 1.2rem 1.5rem;
+            border-top: 1px solid rgba(0,247,255,0.1);
+        }
+
+        .faq-section .accordion-button:focus {
+            box-shadow: 0 0 15px rgba(0, 247, 255, 0.5);
+            outline: none;
+        }
+
+        /* Newsletter Section */
+        .newsletter-section {
+            padding: 100px 0;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary-dark) 100%);
+            text-align: center;
+        }
+
+        .newsletter-content h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            color: var(--primary-cyan);
+            margin-bottom: 1rem;
+        }
+
+        .newsletter-content p {
+            font-size: 1.2rem;
+            color: #bbb;
+            margin-bottom: 3rem;
+        }
+
+        .newsletter-form {
+            max-width: 500px;
+            margin: 0 auto;
+            display: flex;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            padding: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .newsletter-form input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 15px 25px;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .newsletter-form input::placeholder {
+            color: #aaa;
+        }
+
+        .newsletter-form button {
+            background: linear-gradient(135deg, var(--primary-cyan), var(--accent-blue));
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .newsletter-form button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0, 247, 255, 0.3);
         }
 
         .footer {
@@ -268,6 +619,41 @@
             }
         }
 
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .btn-hero {
+                display: block;
+                margin: 10px 0;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .feature-card {
+                padding: 2rem;
+                margin-bottom: 2rem;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -327,16 +713,375 @@
     </div>
 </nav>
 
-<!-- Hero -->
+<!-- Hero Section -->
 <section class="hero">
     <div class="container">
-        <h1>Unleash The Power of Custom PCs</h1>
-        <p>Built for gamers, creators, and performance enthusiasts.</p>
-        <a href="prebuilt-pcs.html" class="btn btn-glow">Shop Prebuilts</a>
-        <a href="#" class="btn btn-outline-light rounded-pill px-4 py-2">Build Your Own</a>
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="hero-content">
+                    <h1>Unleash The Power</h1>
+                    <p class="hero-subtitle">Premium gaming PCs built for performance enthusiasts, streamers, and competitive gamers who demand the absolute best.</p>
+                    <div class="hero-buttons">
+                        <a href="prebuilt-pcs.html" class="btn-hero btn-primary-glow">Shop Prebuilts</a>
+                        <a href="#" class="btn-hero btn-outline-glow">Build Custom PC</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="text-center">
+                    <div class="floating">
+                        <i class="fas fa-desktop" style="font-size: 12rem; color: var(--primary-cyan); opacity: 0.3;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 
+<!-- Features Section -->
+<section class="features">
+    <div class="container">
+        <h2 class="section-title">Why Choose CoreOne?</h2>
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h3 class="feature-title">Ultimate Performance</h3>
+                    <p class="feature-description">Hand-picked components and optimized configurations deliver unmatched gaming and creative performance.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h3 class="feature-title">Expert Assembly</h3>
+                    <p class="feature-description">Professional cable management, stress testing, and quality assurance ensure your PC arrives ready to dominate.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Lifetime Support</h3>
+                    <p class="feature-description">Comprehensive warranty coverage and dedicated technical support keep you gaming without interruption.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <h3 class="feature-title">Custom RGB</h3>
+                    <p class="feature-description">Synchronized RGB lighting systems that match your style and create the perfect gaming atmosphere.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shipping-fast"></i>
+                    </div>
+                    <h3 class="feature-title">Fast Delivery</h3>
+                    <p class="feature-description">Quick assembly and secure shipping get your dream PC to your door faster than the competition.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <h3 class="feature-title">Full Customization</h3>
+                    <p class="feature-description">Every component can be tailored to your exact needs, from budget builds to no-compromise powerhouses.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Product Showcase -->
+<section class="showcase">
+    <div class="container">
+        <h2 class="section-title">Featured Builds</h2>
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="showcase-card">
+                    <div class="showcase-image"></div>
+                    <div class="showcase-content">
+                        <h3 class="showcase-title">Horizon Series</h3>
+                        <p class="showcase-description">Perfect entry-level gaming PC with modern components and stunning RGB lighting.</p>
+                        <div class="showcase-price">Starting at Rs.75,000</div>
+                        <a href="prebuilt-pcs.html" class="btn-showcase">View Series</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="showcase-card">
+                    <div class="showcase-image"></div>
+                    <div class="showcase-content">
+                        <h3 class="showcase-title">Zenith Series</h3>
+                        <p class="showcase-description">High-performance builds designed for serious gamers and content creators.</p>
+                        <div class="showcase-price">Starting at Rs.125,000</div>
+                        <a href="prebuilt-pcs.html" class="btn-showcase">View Series</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="showcase-card">
+                    <div class="showcase-image"></div>
+                    <div class="showcase-content">
+                        <h3 class="showcase-title">Apex Series</h3>
+                        <p class="showcase-description">Ultimate flagship systems with cutting-edge components and liquid cooling.</p>
+                        <div class="showcase-price">Starting at Rs.200,000</div>
+                        <a href="prebuilt-pcs.html" class="btn-showcase">View Series</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-item">
+                    <div class="stat-number">5000+</div>
+                    <div class="stat-label">PCs Built</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-item">
+                    <div class="stat-number">98%</div>
+                    <div class="stat-label">Satisfaction</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-item">
+                    <div class="open-hours">
+                        <span class="animated-number">24</span>/<span class="animated-number">7</span>
+                    </div>
+                    <div class="stat-label">Support</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-item">
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Year Warranty</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="faq-section">
+    <div class="container">
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <div class="row g-4">
+
+            <!-- FAQ Card 1 -->
+            <div class="col-lg-6 col-md-12">
+                <div class="accordion" id="faqAccordion1">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faqHeading1">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse1" aria-expanded="false" aria-controls="faqCollapse1">
+                                What is the warranty period for CoreOne PCs?
+                            </button>
+                        </h2>
+                        <div id="faqCollapse1" class="accordion-collapse collapse" aria-labelledby="faqHeading1" data-bs-parent="#faqAccordion1">
+                            <div class="accordion-body">
+                                All CoreOne PCs come with a standard 3-year warranty covering hardware defects and assembly issues.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Card 2 -->
+            <div class="col-lg-6 col-md-12">
+                <div class="accordion" id="faqAccordion2">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faqHeading2">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse2" aria-expanded="false" aria-controls="faqCollapse2">
+                                Can I customize my PC build?
+                            </button>
+                        </h2>
+                        <div id="faqCollapse2" class="accordion-collapse collapse" aria-labelledby="faqHeading2" data-bs-parent="#faqAccordion2">
+                            <div class="accordion-body">
+                                Yes! We offer full customization options, from component selection to RGB lighting setups. Contact us to design your perfect PC.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Card 3 -->
+            <div class="col-lg-6 col-md-12">
+                <div class="accordion" id="faqAccordion3">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faqHeading3">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse3" aria-expanded="false" aria-controls="faqCollapse3">
+                                Do you ship internationally?
+                            </button>
+                        </h2>
+                        <div id="faqCollapse3" class="accordion-collapse collapse" aria-labelledby="faqHeading3" data-bs-parent="#faqAccordion3">
+                            <div class="accordion-body">
+                                Currently, we ship within Sri Lanka only. International shipping will be available in the near future.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Card 4 -->
+            <div class="col-lg-6 col-md-12">
+                <div class="accordion" id="faqAccordion4">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faqHeading4">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse4" aria-expanded="false" aria-controls="faqCollapse4">
+                                How long does assembly take?
+                            </button>
+                        </h2>
+                        <div id="faqCollapse4" class="accordion-collapse collapse" aria-labelledby="faqHeading4" data-bs-parent="#faqAccordion4">
+                            <div class="accordion-body">
+                                Assembly and testing typically take 3-5 business days depending on the components.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Card 5 -->
+            <div class="col-lg-6 col-md-12">
+                <div class="accordion" id="faqAccordion5">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faqHeading5">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse5" aria-expanded="false" aria-controls="faqCollapse5">
+                                Can I upgrade my PC later?
+                            </button>
+                        </h2>
+                        <div id="faqCollapse5" class="accordion-collapse collapse" aria-labelledby="faqHeading5" data-bs-parent="#faqAccordion5">
+                            <div class="accordion-body">
+                                Absolutely! All CoreOne PCs are built with future upgrades in mind.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Card 6 -->
+            <div class="col-lg-6 col-md-12">
+                <div class="accordion" id="faqAccordion6">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faqHeading6">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse6" aria-expanded="false" aria-controls="faqCollapse6">
+                                Do you offer financing options?
+                            </button>
+                        </h2>
+                        <div id="faqCollapse6" class="accordion-collapse collapse" aria-labelledby="faqHeading6" data-bs-parent="#faqAccordion6">
+                            <div class="accordion-body">
+                                Yes, we have flexible payment plans and financing options. Contact us for details.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Card 7 -->
+            <div class="col-lg-6 col-md-12">
+                <div class="accordion" id="faqAccordion7">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faqHeading7">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse7" aria-expanded="false" aria-controls="faqCollapse7">
+                                What is your return policy?
+                            </button>
+                        </h2>
+                        <div id="faqCollapse7" class="accordion-collapse collapse" aria-labelledby="faqHeading7" data-bs-parent="#faqAccordion7">
+                            <div class="accordion-body">
+                                We offer a 14-day return policy for unused products. Certain restrictions apply.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Card 8 -->
+            <div class="col-lg-6 col-md-12">
+                <div class="accordion" id="faqAccordion8">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faqHeading8">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse8" aria-expanded="false" aria-controls="faqCollapse8">
+                                Do you provide technical support?
+                            </button>
+                        </h2>
+                        <div id="faqCollapse8" class="accordion-collapse collapse" aria-labelledby="faqHeading8" data-bs-parent="#faqAccordion8">
+                            <div class="accordion-body">
+                                Yes! Our support team is available 24/7 to help with any issues.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Card 9 -->
+            <div class="col-lg-6 col-md-12">
+                <div class="accordion" id="faqAccordion9">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faqHeading9">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse9" aria-expanded="false" aria-controls="faqCollapse9">
+                                Are the PCs pre-tested before shipping?
+                            </button>
+                        </h2>
+                        <div id="faqCollapse9" class="accordion-collapse collapse" aria-labelledby="faqHeading9" data-bs-parent="#faqAccordion9">
+                            <div class="accordion-body">
+                                Every system undergoes rigorous testing including stress tests and benchmarking before shipping.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Card 10 -->
+            <div class="col-lg-6 col-md-12">
+                <div class="accordion" id="faqAccordion10">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faqHeading10">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse10" aria-expanded="false" aria-controls="faqCollapse10">
+                                Can I track my order?
+                            </button>
+                        </h2>
+                        <div id="faqCollapse10" class="accordion-collapse collapse" aria-labelledby="faqHeading10" data-bs-parent="#faqAccordion10">
+                            <div class="accordion-body">
+                                Yes, you will receive a tracking link via email as soon as your PC is shipped.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="newsletter-section">
+    <div class="container">
+        <div class="newsletter-content">
+            <h2>Stay In The Loop</h2>
+            <p>Get the latest updates on new builds, exclusive deals, and gaming insights.</p>
+            <form class="newsletter-form">
+                <input type="email" placeholder="Enter your email address" required>
+                <button type="submit">Subscribe</button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
 <footer class="footer">
     <div class="container">
         <div class="row justify-content-between align-items-start">
@@ -406,29 +1151,95 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="scripts/cart.js"></script>
-
 <script>
     $(window).on("scroll", function () {
-        const navbar = $(".navbar");
+        $(".navbar").toggleClass("scrolled", $(this).scrollTop() > 50);
+    });
 
-        if ($(this).scrollTop() > 50) {
-            navbar.addClass("scrolled");
-        } else {
-            navbar.removeClass("scrolled");
+    // Newsletter form
+    document.querySelector('.newsletter-form')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = this.querySelector('input[type="email"]').value;
+        if (email) {
+            alert('Thank you for subscribing! We\'ll keep you updated with the latest from CoreOne.');
+            this.reset();
         }
+    });
 
-        $(".reveal").each(function () {
-            const position = $(this).offset().top;
-            const windowTop = $(window).scrollTop();
-            const windowHeight = $(window).height();
+    // Animate stats on scroll
+    function animateStats() {
+        const stats = document.querySelectorAll('.stat-number');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const target = entry.target;
+                    const finalValue = target.textContent;
+                    const numericValue = parseInt(finalValue.replace(/[^\d]/g, ''));
+                    const suffix = finalValue.replace(/[\d]/g, '');
 
-            if (position < windowTop + windowHeight - 100) {
-                $(this).addClass("active");
+                    let current = 0;
+                    const increment = numericValue / 50;
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= numericValue) {
+                            current = numericValue;
+                            clearInterval(timer);
+                        }
+                        target.textContent = Math.floor(current) + suffix;
+                    }, 30);
+
+                    observer.unobserve(target);
+                }
+            });
+        });
+
+        stats.forEach(stat => observer.observe(stat));
+    }
+
+    // Initialize animations
+    document.addEventListener('DOMContentLoaded', animateStats);
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
             }
         });
     });
 
+    // Add loading states to buttons
+    document.querySelectorAll('.btn-showcase, .btn-hero, .btn-primary-glow').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            if (this.getAttribute('href') === '#') {
+                e.preventDefault();
+            }
 
+            // Add loading effect for better UX
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+            this.style.pointerEvents = 'none';
+
+            setTimeout(() => {
+                this.innerHTML = originalText;
+                this.style.pointerEvents = 'auto';
+
+                // If it's a real link, navigate
+                if (this.getAttribute('href') && this.getAttribute('href') !== '#') {
+                    window.location.href = this.getAttribute('href');
+                }
+            }, 1000);
+        });
+    });
+
+    // Initialize cart badge on page load
+    updateCartBadge();
 </script>
+
 </body>
 </html>

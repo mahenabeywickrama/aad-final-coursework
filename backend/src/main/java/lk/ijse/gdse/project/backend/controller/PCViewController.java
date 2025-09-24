@@ -34,7 +34,6 @@ public class PCViewController {
     @GetMapping("/find/{id}")
     public ResponseEntity<APIResponse> findPC(@PathVariable("id") String id) {
         PCDTO pcById = pcService.findPCById(id);
-        System.out.println(pcById);
         return ResponseEntity.ok(
                 new APIResponse(
                         200,

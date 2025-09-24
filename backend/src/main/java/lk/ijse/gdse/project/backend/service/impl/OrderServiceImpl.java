@@ -7,13 +7,17 @@ import lk.ijse.gdse.project.backend.repository.OrdersRepository;
 import lk.ijse.gdse.project.backend.repository.PCRepository;
 import lk.ijse.gdse.project.backend.repository.PaymentRepository;
 import lk.ijse.gdse.project.backend.service.OrderService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -100,5 +104,24 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Orders> getOrdersByUser(User user) {
         return ordersRepository.findByUser(user);
+    }
+
+    @Override
+    public List<Orders> getAllOrders() {
+        return ordersRepository.findAll();
+    }
+
+    @Override
+    public Page<Orders> getAllOrdersFromPage(Pageable pageable) {
+        return ordersRepository.findAll(pageable);
+    }
+
+    @Override
+    public Map<String, Object> getOrderStats() {
+        Map<String, Object> stats = new HashMap<>();
+        stats.put("totalOrders", ordersRepository.countAllOrders());
+        stats.put("pendingOrders", ordersRepository.countPendingOrders());
+        stats.put("totalRevenue", ordersRepository.totalRevenue());
+        return stats;
     }
 }

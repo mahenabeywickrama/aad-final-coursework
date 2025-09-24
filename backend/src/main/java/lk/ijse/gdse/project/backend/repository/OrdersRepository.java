@@ -22,4 +22,13 @@ public interface OrdersRepository extends JpaRepository<Orders, Long> {
 
     @Query("SELECT SUM(o.totalAmount) FROM Orders o")
     Double sumRevenue();
+
+    @Query("SELECT COUNT(o) FROM Orders o")
+    long countAllOrders();
+
+    @Query("SELECT COUNT(o) FROM Orders o WHERE o.status = 'PENDING'")
+    long countPendingOrders();
+
+    @Query("SELECT COALESCE(SUM(o.totalAmount), 0) FROM Orders o WHERE o.status = 'PAID'")
+    double totalRevenue();
 }

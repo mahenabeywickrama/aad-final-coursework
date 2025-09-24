@@ -127,7 +127,7 @@
 
 <!-- Logo -->
 <div class="logo">
-    <a href="index.html">Core<span>One</span></a>
+    <a href="index.html" style="color: #00f7ff">Core<span>One</span></a>
 </div>
 
 <!-- Checkout Container -->
@@ -172,6 +172,13 @@
 <script type="text/javascript" src="https://www.payhere.lk/lib/payhere.js"></script>
 <script>
     function loadCart() {
+        const token = localStorage.getItem("accessToken");
+
+        if (!token) {
+            window.location.href = "signin.html";
+            return;
+        }
+
         const cart = JSON.parse(localStorage.getItem("cart"));
         if (cart.length === 0) {
             alert("You have no items in your cart.");

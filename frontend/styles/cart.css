@@ -99,3 +99,19 @@
     background: #00c2cc;
     color: #fff;
 }
+
+.checkout {
+    background: #00f7ff;
+    border: none;
+    color: #000;
+    font-weight: bold;
+    padding: 12px 24px;
+    transition: all 0.3s;
+    border-radius: 8px;
+}
+
+.checkout:hover {
+    background: #00c2cc;
+    color: #fff;
+    box-shadow: 0 0 15px #00f7ff;
+}

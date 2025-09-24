@@ -95,3 +95,7 @@ function updateCartBadge() {
 $(document).ready(function () {
     updateCartBadge();
 });
+
+document.getElementsByClassName('checkout')[0].addEventListener("click", () => {
+    window.location.href = "checkout.html";
+});

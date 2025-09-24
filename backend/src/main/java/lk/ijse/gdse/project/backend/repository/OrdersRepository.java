@@ -19,4 +19,7 @@ public interface OrdersRepository extends JpaRepository<Orders, Long> {
     void updatePaymentStatus(Long id);
 
     List<Orders> findByUser(User user);
+
+    @Query("SELECT SUM(o.totalAmount) FROM Orders o")
+    Double sumRevenue();
 }

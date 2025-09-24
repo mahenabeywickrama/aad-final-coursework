@@ -160,7 +160,6 @@
 
     #addPCSection {
       margin: 0 auto;
-      padding: 10px 20px;
       width: 100%;
       text-align: left;
     }
@@ -527,7 +526,7 @@
               <div class="timeline-icon"><i class="fas fa-dollar-sign"></i></div>
               <div class="timeline-content form-floating">
                 <input type="number" step="0.01" min="0" class="form-control" id="pcPrice" placeholder="Price" required>
-                <label for="pcPrice">Price ($)</label>
+                <label for="pcPrice">Price (Rs)</label>
               </div>
             </div>
 
@@ -536,7 +535,7 @@
               <div class="timeline-icon"><i class="fas fa-tag"></i></div>
               <div class="timeline-content form-floating">
                 <input type="number" step="0.01" min="0" class="form-control" id="pcOldPrice" placeholder="Old Price">
-                <label for="pcOldPrice">Old Price ($)</label>
+                <label for="pcOldPrice">Old Price (Rs)</label>
               </div>
             </div>
 
@@ -635,25 +634,25 @@
           <div class="col-md-6 col-lg-3">
             <div class="card text-center">
               <h5><i class="fas fa-desktop me-1"></i> Total PCs</h5>
-              <p>120</p>
+              <p id="totalPCs">--</p>
             </div>
           </div>
           <div class="col-md-6 col-lg-3">
             <div class="card text-center">
               <h5><i class="fas fa-dollar-sign me-1"></i> Total Sales</h5>
-              <p>350</p>
+              <p id="totalSales">--</p>
             </div>
           </div>
           <div class="col-md-6 col-lg-3">
             <div class="card text-center">
               <h5><i class="fas fa-chart-line me-1"></i> Revenue</h5>
-              <p>$95,000</p>
+              <p id="totalRevenue">--</p>
             </div>
           </div>
           <div class="col-md-6 col-lg-3">
             <div class="card text-center">
               <h5><i class="fas fa-star me-1"></i> Top Series</h5>
-              <p>Pro</p>
+              <p id="topSeries">--</p>
             </div>
           </div>
         </div>
@@ -671,7 +670,7 @@
                 <th>GPU</th>
                 <th>RAM</th>
                 <th>Storage</th>
-                <th>Price</th>
+                <th>Price (Rs)</th>
                 <th>Total Sales</th>
                 <th>Actions</th>
               </tr>
@@ -753,6 +752,28 @@
         return null;
       }
     }
+
+    async function loadDashboardStats() {
+      try {
+        const res = await fetch("http://localhost:8080/api/v1/admin/pcdashboard/stats", {
+          method: "GET",
+          headers: {
+            "Authorization": "Bearer " + token
+          }
+        });
+        const data = await res.json();
+        console.log(data)
+
+        document.getElementById("totalPCs").textContent = data.data.totalPCs;
+        document.getElementById("totalSales").textContent = data.data.totalSales;
+        document.getElementById("totalRevenue").textContent = "Rs. " + data.data.totalRevenue.toLocaleString();
+        document.getElementById("topSeries").textContent = data.data.topSeries;
+      } catch (err) {
+        console.error("Error fetching dashboard stats:", err);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", loadDashboardStats);
 
     $("#logOut").on("click", function (e) {
       e.preventDefault();
@@ -971,6 +992,8 @@
         }
       ]
     });
+
+    loadDashboardStats();
 
     const usersTable = $('#usersTable').DataTable({
       processing: false,

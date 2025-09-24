@@ -31,9 +31,10 @@ public class PCViewController {
         return ResponseEntity.ok(pcs);
     }
 
-    @GetMapping("find/{id}")
+    @GetMapping("/find/{id}")
     public ResponseEntity<APIResponse> findPC(@PathVariable("id") String id) {
         PCDTO pcById = pcService.findPCById(id);
+        System.out.println(pcById);
         return ResponseEntity.ok(
                 new APIResponse(
                         200,
@@ -43,7 +44,7 @@ public class PCViewController {
         );
     }
 
-    @GetMapping("{id}/fps")
+    @GetMapping("/{id}/fps")
     public ResponseEntity<APIResponse> getFPS(@PathVariable String id) {
         try {
             PC pc = modelMapper.map(pcService.findPCById(id), PC.class);

@@ -510,6 +510,29 @@
       return;
     }
 
+    $.ajax({
+      url: "http://localhost:8080/hello/user",
+      method: "GET",
+      headers: {
+        "Authorization": "Bearer " + token
+      },
+      success: function (response) {
+        console.log("Response:", response);
+        const payload = parseJwt(token);
+        $("#welcomeMessage").text("Welcome, " + payload.sub);
+      },
+      error: function (xhr) {
+        if (xhr.status === 403) {
+          window.location.href = "admin-dashboard.html";
+        } else if (xhr.status === 401) {
+          localStorage.removeItem("accessToken");
+          window.location.href = "signin.html";
+        } else {
+          alert("Error: " + xhr.responseText);
+        }
+      }
+    });
+
     // Decode JWT and set welcome message
     const payload = parseJwt(token);
     $("#welcomeMessage").text("Welcome, " + payload.sub);

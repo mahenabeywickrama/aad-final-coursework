@@ -947,10 +947,11 @@
         let mainImgUrl = null;
 
         const token = localStorage.getItem("accessToken");
-        fetch(`http://localhost:8080/api/v1/pc/find/${pcId}`, { headers: { "Authorization": "Bearer " + token }})
+        fetch(`http://localhost:8080/api/v1/pc/find/${pcId}`)
             .then(res => res.json())
             .then(data => {
                 const pc = data.data;
+                console.log(pc)
                 document.getElementById("pcName").innerText = pc.name;
                 document.getElementById("pcNameBreadcrumb").innerText = pc.name;
                 document.getElementById("pcSeries").innerText = pc.series;
@@ -1035,9 +1036,7 @@
         });
 
         // Replace the existing FPS fetch and render logic with this:
-        fetch(`http://localhost:8080/api/v1/pc/${pcId}/fps`, {
-            headers: { "Authorization": "Bearer " + token }
-        })
+        fetch(`http://localhost:8080/api/v1/pc/${pcId}/fps`)
             .then(res => res.json())
             .then(data => {
                 const fpsData = data.data; // contains 1080p, 1440p, 4K
@@ -1055,6 +1054,7 @@
                         // shorten long names
                         const shortName = game.length > 15 ?
                             game.replace('Call of Duty: Modern Warfare III', 'COD: MW3')
+                                .replace('Call of Duty MW3', 'COD: MW3')
                                 .replace('Counter-Strike 2', 'CS2')
                                 .replace('Minecraft RTX', 'MC: RTX')
                                 .replace('Black Myth: Wukong', 'BM: Wukong')

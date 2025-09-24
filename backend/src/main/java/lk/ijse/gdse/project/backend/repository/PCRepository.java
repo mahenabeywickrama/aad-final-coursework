@@ -16,4 +16,7 @@ public interface PCRepository extends JpaRepository<PC, Long> {
             "LOWER(p.cpu) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
             "LOWER(p.gpu) LIKE LOWER(CONCAT('%', :search, '%'))")
     Page<PC> searchPCs(@Param("search") String search, Pageable pageable);
+
+    @Query(value = "SELECT series FROM pc GROUP BY series ORDER BY SUM(total_sales) DESC LIMIT 1", nativeQuery = true)
+    String findTopSellingSeries();
 }
